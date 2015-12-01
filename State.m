@@ -18,7 +18,7 @@ classdef State < handle
             state.t = 0 ;
             state.p = sim.p0 ;
             state.v = sim.v0 ;
-            state.th = [sim.y0,0,0]' ;
+            state.th = [0,0,sim.y0]' ;
             state.w = sim.w0 ;
             state.R = [cos(sim.y0),-sin(sim.y0),0 ; sin(sim.y0),cos(sim.y0),0 ; 0,0,1] ;
             state.heading = state.R(:,1) ;

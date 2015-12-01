@@ -30,7 +30,7 @@ plot(history.t,history.th(1,:).*(180/pi),'k',history.t,history.w(3,:).*(180/pi),
 xlim([0,sim.T])
 xlabel('s')
 ylabel('deg')
-title yaw
+title roll
 grid on
 
 subplot(2,3,5)
@@ -46,7 +46,7 @@ plot(history.t,history.th(3,:).*(180/pi),'k',history.t,history.w(1,:).*(180/pi),
 xlim([0,sim.T])
 xlabel('s')
 ylabel('deg')
-title roll
+title yaw
 grid on
 
 if(sim.plotOutputs == true)
