@@ -1,4 +1,4 @@
-classdef Config_Robot
+classdef Config_Robot < handle
 % All robot decision making processes go here.
     
     properties

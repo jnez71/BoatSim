@@ -8,22 +8,24 @@ Adjust parameters and functions in any of the Config_* files to vary:
 - environmental force models and gains...
 - robot's decision procedure, controller, state estimator...
 
-COMPLETE:
+COMPLETED FEATURES:
 - single body dynamics engine
 - high-speed mode with plots
 - realtime mode with 3D animation
 - gravity, buoyancy, and drag models
 - robot class designed for easy but general idea testing
 
-INCOMPLETE:
-- good documentation
-- user interface for realtime input
-- camera follows the boat during 3D animation
+IN PROGRESS:
+- user interface for realtime input (param dialog boxes, camera shifter)
 - thruster models
+- draw thrusters in animation
+
+INCOMPLETE FEATURES:
+- good documentation
 - wind and wave models
 - multibody support with collision detection
 - 2D animation mode
 
-This program may never be completed because #python.
+This program will be outclassed by a Python program called jSim.
 
 Intended for use by PropaGator2 of the Machine Intelligence Lab at the University of Florida.

@@ -1,4 +1,4 @@
-classdef Config_Boat
+classdef Config_Boat < handle
 % Set the start-up boat parameters by editing the property values below.
 % The current values are for PropaGator 2.
 % Thruster dynamics are defined by the methods below.

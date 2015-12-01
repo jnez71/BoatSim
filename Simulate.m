@@ -9,10 +9,11 @@ i = 1 ;
 nfinity = sim.T/sim.dt + 1 ;
 syncFlag = false ;
 frameTimer = 1 ;
-quit = false ;
+sim.quit = false ;
 
 % Prepare history for timeseries sim, or graphics for realtime sim
 if(sim.type == 1)
+    fprintf('\n')
     history = History(sim) ;
 elseif(sim.type == 2) % initialize 2D graphics
     Init2D ;
@@ -21,8 +22,8 @@ elseif(sim.type == 3) % initialize 3D graphics
 end
 
 % Begin simulation
-fprintf('\nSimuu Startaruu !!\n') ;
-while(i <= nfinity && quit == false)
+fprintf('Simuu Startaruu !!\n') ;
+while(i <= nfinity && sim.quit == false)
     tic ;
     
     % Record or animate
@@ -44,8 +45,6 @@ while(i <= nfinity && quit == false)
                 frameTimer = frameTimer+1 ;
             end
         end
-        % Collect user inputs from GUI
-        UserRead ;
     end
     
     % Compute environmental forces
@@ -78,9 +77,8 @@ while(i <= nfinity && quit == false)
             syncFlag = false ;
         else
             syncFlag = true ;
-        end
+        end    
     end
-    
 end
 
 if(sim.type == 1)
@@ -88,6 +86,7 @@ if(sim.type == 1)
     fprintf('\nDone !!\n') ;
 end
 
-if(quit == true)
+if(sim.quit == true)
+    close
     fprintf('Quitting...\n') ;
 end

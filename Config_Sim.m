@@ -1,4 +1,4 @@
-classdef Config_Sim
+classdef Config_Sim < handle
 % Set the start-up simulation parameters by editing the property values below.
 % Leave type = -1 alone.
     
@@ -7,6 +7,7 @@ classdef Config_Sim
         T = 20 ; % timeseries length (s)
         showFrame = 2 ; % how many iterations should be computed before the 3D animation is refreshed
         plotOutputs = false ; % should the arbitrary outputs of interest be plotted after a timeseries sim
+        drawIntent = true ; % should the robot's intent (applied thrusts) be drawn during realtime sims
         
         p0 = [0,0,0]' ; % initial position [x,y,z]' in worldframe (m)
         v0 = [1,2,10]' ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
@@ -19,9 +20,10 @@ classdef Config_Sim
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
         spans = 0.5*[-10 10 -10 10 -2 4] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
         windowSize = zeros(1,6) ; % initialized in constructor function
-        view0 = [-135 30] ; % initial viewing angle for 3D graphics, usually [-135 30]
+        view0 = [-122 24] ; % initial viewing angle for 3D graphics, usually [-135 30]
         
         type = -1 ; % don't change, -1 implies currently uninitialized
+        quit = false ; % don't change, obvious reasons
     end
     
     methods

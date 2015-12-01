@@ -22,13 +22,22 @@ while(true)
             break ;
             
         case {2,3}
-            fprintf('\nAt any time press one of these keys to configure parameters:\n') ;
-            fprintf('s - simulation\n') ;
-            fprintf('b - boat\n') ;
-            fprintf('e - environment\n') ;
-            fprintf('r - robot\n') ;
-            fprintf('c - shifts camera to the boat\n') ;
-            fprintf('q - quit\n') ;
+            fprintf('\nInitial conditions:\n') ;
+            fprintf('\n---\n\n') ;
+            fprintf('position (m)\n') ;
+            disp(sim.p0) ;
+            fprintf('velocity (m/s)\n') ;
+            disp(sim.v0) ;
+            fprintf('yaw (deg)\n') ;
+            disp(sim.y0) ;
+            fprintf('yaw rate (deg/s)\n') ;
+            disp(sim.w0) ;
+            fprintf('---\n\n') ;
+            fprintf('desired position (m)\n') ;
+            disp(sim.pDes0) ;
+            fprintf('desired yaw (deg)\n') ;
+            disp(sim.yDes0) ;
+            fprintf('---\n\n') ;
             sim.type = choice ;
             break ;
             

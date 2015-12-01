@@ -1,4 +1,4 @@
-classdef Config_Env
+classdef Config_Env < handle
 % Set the start-up environment parameters by editing the property values below.
 % Edit the methods to change the environmental force models. All environment
 % methods must output a force vector [Fx,Fy,Fz]' expressed in WORLDFRAME coordinates
