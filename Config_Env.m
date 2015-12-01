@@ -11,7 +11,7 @@ classdef Config_Env < handle
         rho = 1000 ; % density of water (kg/m^3)
         % drag
         D = [8.8,213,800] ; % drag coefficients on translations (N/(m/s))
-        D_rot = [93,500,500] ; % drag coefficients on rotations (N*m/(rad/s))
+        D_rot = [93,500,200] ; % drag coefficients on rotations (N*m/(rad/s))
         vPlane = 5.14 ; % bodyframe x velocity necessary to start hydroplaning (m/s)
         PlaneFrac = 0.95 ; % fraction of forward drag coefficient while hydroplaning (N/(m/s)^2)
         % wind
@@ -40,27 +40,31 @@ classdef Config_Env < handle
         end
         
         % small angles hydrostatic buoyancy model
-        function [Fb,Mb] = Buoyancy(env,boat,state)      % FIX MOMENT FRAME
+        function [Fb,Mb] = Buoyancy(env,boat,state)
             
             Fbz = env.rho * boat.svol(1) * (boat.height - state.p(3)) * env.g ;
             if(Fbz < 0)
-                Fbz = 0 ;
+                Fb = [0,0,0]' ;
+            else
+                Fb = [0,0,Fbz]' ;
             end
             
-            Mb_roll = -env.rho * boat.svol(2) * state.th(1) * env.g ;
-            Mb_pitch = -env.rho * boat.svol(3) * state.th(2) * env.g ;
-            
-            Fb = [0,0,Fbz]' ;
-            Mb = [Mb_roll,Mb_pitch,0]' ;
+            if(state.p(3)>boat.height*1.25)
+                Mb = [0,0,0]' ;
+            else
+                Mb_roll = -env.rho * boat.svol(2) * state.th(1) * env.g ;
+                Mb_pitch = -env.rho * boat.svol(3) * state.th(2) * env.g ;
+                Mb = [Mb_roll,Mb_pitch,0]' ;
+            end
             
         end
         
         % switch-mode v^2 drag model with damping on rotations and z translation
-        function [Fd,Md] = Drag(env,boat,state)             % FIX MOMENT FRAME
+        function [Fd,Md] = Drag(env,boat,state)
             
             vBoat = state.R' * state.v ;
             Fd(3,1) = -env.D(3) * vBoat(3) ;
-            if(state.p(3)>boat.height)
+            if(state.p(3)>boat.height*1.25)
                 Fd = [0;0;0] ;
             end
             Fd(1:2,1) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
@@ -69,7 +73,8 @@ classdef Config_Env < handle
                 Fd(1) = env.PlaneFrac * Fd(1) ;
             end
             
-            Md = -state.R' * (env.D_rot' .* state.w) ;
+            Fd = state.R*Fd ;
+            Md = -env.D_rot' .* (state.R' * state.w) ;
             
         end
         

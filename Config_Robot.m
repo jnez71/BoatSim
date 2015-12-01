@@ -21,7 +21,7 @@ classdef Config_Robot < handle
             stateEst = robot.Estimate(stateMeas) ;
             
             robot.memory = stateEst ;
-            robot.model = sysID(robot) ;
+            robot.model = SysID(robot) ;
             
             [FtDes,MtDes] = robot.Controller(stateEst) ;
             
@@ -65,7 +65,7 @@ classdef Config_Robot < handle
             
         end
         
-        function model = sysID(robot)
+        function model = SysID(robot)
             
             model = 0 ;
             

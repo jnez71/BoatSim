@@ -9,13 +9,13 @@ classdef Config_Sim < handle
         plotOutputs = false ; % should the arbitrary outputs of interest be plotted after a timeseries sim
         drawIntent = true ; % should the robot's intent (applied thrusts) be drawn during realtime sims
         
-        p0 = [0,0,0]' ; % initial position [x,y,z]' in worldframe (m)
-        v0 = [1,2,10]' ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
+        p0 = [0,0,2]' ; % initial position [x,y,z]' in worldframe (m)
+        v0 = [0,0,0]' ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
         y0 = 0 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
-        w0 = [0,0,10]' ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
+        w0 = [0,-40,3*pi]' ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
         
-        pDes0 = [0,0]' ; % initial position waypoint [x,y] (m)
-        yDes0 = 0 ; % initial yaw waypoint (rad, -pi to pi)
+        pDes0 = [3.5,-1]' ; % initial position waypoint [x,y] (m)
+        yDes0 = pi/4 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
         spans = 0.5*[-10 10 -10 10 -2 4] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
@@ -28,12 +28,16 @@ classdef Config_Sim < handle
     
     methods
         function sim = Config_Sim()
+            sim.Set_Window()
+        end
+        
+        function [] = Set_Window(sim)
             sim.windowSize(1) = sim.ocam(1) + sim.spans(1) ;
             sim.windowSize(2) = sim.ocam(1) + sim.spans(2) ;
             sim.windowSize(3) = sim.ocam(2) + sim.spans(3) ;
             sim.windowSize(4) = sim.ocam(2) + sim.spans(4) ;
             sim.windowSize(5) = sim.ocam(3) + sim.spans(5) ;
-            sim.windowSize(6) = sim.ocam(3) + sim.spans(6) ;  
+            sim.windowSize(6) = sim.ocam(3) + sim.spans(6) ;
         end
     end
     

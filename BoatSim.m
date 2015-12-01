@@ -29,14 +29,14 @@ while(true)
             fprintf('velocity (m/s)\n') ;
             disp(sim.v0) ;
             fprintf('yaw (deg)\n') ;
-            disp(sim.y0) ;
+            disp(sim.y0*180/pi) ;
             fprintf('yaw rate (deg/s)\n') ;
-            disp(sim.w0) ;
+            disp(sim.w0*180/pi) ;
             fprintf('---\n\n') ;
             fprintf('desired position (m)\n') ;
             disp(sim.pDes0) ;
             fprintf('desired yaw (deg)\n') ;
-            disp(sim.yDes0) ;
+            disp(sim.yDes0*180/pi) ;
             fprintf('---\n\n') ;
             sim.type = choice ;
             break ;

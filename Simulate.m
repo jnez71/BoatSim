@@ -38,7 +38,12 @@ while(i <= nfinity && sim.quit == false)
             Draw2D ;
         elseif(sim.type == 3)
             if(frameTimer == sim.showFrame)
-                delete(BoatGraphic) ; % clear last boat graphic
+                % Delete last graphics
+                delete(boatGraphic) ;
+                delete(waterGraphic) ;
+                delete(waypointGraphic_p) ;
+                delete(waypointGraphic_y) ;
+                delete(waypointGraphic_y_ep) ;
                 Draw3D ;
                 frameTimer = 1 ;
             else
@@ -59,15 +64,18 @@ while(i <= nfinity && sim.quit == false)
     
     % Compute actuator dynamics based on robot decision
     if(strcmp(boat.type, 'azi'))
-        [Ft,Mt] = boat.aziThrust(command) ;
+        [Ft,Mt] = boat.AziThrust(command) ;
     elseif(strcmp(boat.type, 'fixed'))
-        [Ft,Mt] = boat.fixedThrust(command) ;
+        [Ft,Mt] = boat.FixedThrust(command) ;
     else
         error('Unknown boat thruster configuration. Check Config_Boat.m')
     end 
     
     % Use collected forces and moments to step the dynamics forward one dt
     StepDynamics ;
+    
+    % Any special events go here
+    Event ;
     
     % sinc animation timing for realtime sims
     if(sim.type ~= 1)

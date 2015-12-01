@@ -39,14 +39,14 @@ classdef Config_Boat < handle
             boat.invI = inv(boat.I) ;
         end
         
-        function [Ft,Mt] = aziThrust(boat,command)
+        function [Ft,Mt] = AziThrust(boat,command)
             
             Ft = [0,0,0]' ;
             Mt = [0,0,0]' ;
             
         end
         
-        function [Ft,Mt] = fixedThrust(boat,command)
+        function [Ft,Mt] = FixedThrust(boat,command)
             
             Ft = [0,0,0]' ;
             Mt = [0,0,0]' ;
