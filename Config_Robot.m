@@ -6,6 +6,7 @@ classdef Config_Robot < handle
         model ;
         pDes ;
         yDes ;
+        active = true ;
     end
     
     methods

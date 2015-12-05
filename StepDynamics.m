@@ -1,6 +1,6 @@
 % Sum forces and moments on boat
 F = Fg + Fb + Fd + Fw + Fv + env.Fz + Ft ;
-M = Mg + Mb + Md + Mw+ Mv + state.R'*env.Mz + Mt ;
+M = Mg + Mb + Md + Mw+ Mv + env.Mz + Mt ;
 % F = [0;0;0] ; % free body
 % M = [0;0;0] ; % free body
 

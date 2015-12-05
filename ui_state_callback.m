@@ -15,7 +15,7 @@ prompt(3) = cellstr('Yaw (deg)') ;
 default(3) = cellstr(mat2str(round(state.th(3).*(180/pi).*100)./100)) ;
 
 prompt(4) = cellstr('Angular Velocity (body frame, deg/s)') ;
-default(4) = cellstr(mat2str(round(state.w.*(180/pi).*100)./100)) ;
+default(4) = cellstr(mat2str(round(state.R'*state.w.*(180/pi).*100)./100)) ;
 
 [answer] = inputdlg(prompt, dlg_title, 1, default) ;
 if isempty(answer)

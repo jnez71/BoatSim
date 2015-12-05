@@ -1,15 +1,7 @@
-function [] = ui_cam_callback(hObject, eventdata, sim)
+function [] = ui_cam_callback(hObject, eventdata, sim, state)
 
-% answer = inputdlg(prompt,dlg_title,num_lines,defAns,options)
-%
-% key = getkey() ;
-% 
-% disp(key)
-
-disp('user read cam happened')
-
-sim
-
-% concerned about fitting water patch
+sim.ocam = [state.p(1), state.p(2), sim.ocam(3)] ;
+sim.Set_Window() ;
+axis(sim.windowSize) ;
 
 end

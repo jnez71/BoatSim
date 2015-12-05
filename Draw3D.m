@@ -9,12 +9,22 @@ boatGraphic = patch(object,'FaceColor',       [0.2 0.2 0.2], ...
          'AmbientStrength', 0.15) ;
 material('dull') ; % body material
 
-% Update displayed time
-timestring = strcat('Time: ', num2str(state.t)) ;
+% Update displayed text
+timestring = strcat({'Time:  '}, num2str(round(state.t.*100)./100)) ;
 set(ui_time, 'String', timestring) ;
+perrorstring = strcat({'Position Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2)].*100)./100)) ;
+set(ui_perror, 'String', perrorstring) ;
+yawerrorstring = strcat({'Yaw Error:  '}, num2str(round((robot.yDes(1)-state.th(3)).*(180/pi).*100)./100)) ;
+set(ui_yawerror, 'String', yawerrorstring) ;
+positionstring = strcat({'Position:  '}, num2str(round([state.p(1), state.p(2), state.p(3)].*100)./100)) ;
+set(ui_position, 'String', positionstring) ;
+velocitystring = strcat({'Velocity:  '}, num2str(round([state.v(1), state.v(2), state.v(3)].*100)./100)) ;
+set(ui_velocity, 'String', velocitystring) ;
+orientationstring = strcat({'Yaw:  '}, num2str(round([state.th(3)].*100.*(180/pi))./100), {'          '}, 'Rate:', num2str(round([state.w(3)].*(180/pi).*100)./100)) ;
+set(ui_orientation, 'String', orientationstring) ;
 
 % Draw water
-waterGraphic = patch([sim.windowSize(1),sim.windowSize(2),sim.windowSize(2),sim.windowSize(1)],[sim.windowSize(1),sim.windowSize(1),sim.windowSize(2),sim.windowSize(2)],'blue','FaceAlpha',0.25) ;
+waterGraphic = patch([sim.windowSize(1),sim.windowSize(2),sim.windowSize(2),sim.windowSize(1)],[sim.windowSize(3),sim.windowSize(3),sim.windowSize(4),sim.windowSize(4)],'blue','FaceAlpha',0.25) ;
 
 % Draw desired waypoint
 wpel = 0.25 ;

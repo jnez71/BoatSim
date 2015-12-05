@@ -27,6 +27,8 @@ classdef Config_Env < handle
         % disturbance
         Fz = [0,0,0]' ; % initial Zanza force (N)
         Mz = [0,0,0]' ; % initial Zanza moment (N*m)
+        % general
+        active = true ; % should environment affect the body
     end
     
     methods
@@ -64,7 +66,7 @@ classdef Config_Env < handle
             
             vBoat = state.R' * state.v ;
             Fd(3,1) = -env.D(3) * vBoat(3) ;
-            if(state.p(3)>boat.height*1.25)
+            if(state.p(3)>boat.height*1.1)
                 Fd = [0;0;0] ;
             end
             Fd(1:2,1) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
@@ -73,8 +75,18 @@ classdef Config_Env < handle
                 Fd(1) = env.PlaneFrac * Fd(1) ;
             end
             
-            Fd = state.R*Fd ;
-            Md = -env.D_rot' .* (state.R' * state.w) ;
+            if state.p(3) < 0
+                if abs(state.p(3)) > boat.height
+                    depthscale = 1 + boat.height ;
+                else
+                    depthscale = 1 - state.p(3) ;
+                end
+            else
+                depthscale = 1 ;
+            end
+            
+            Fd = depthscale * state.R * Fd ;
+            Md = depthscale * -env.D_rot' .* (state.R' * state.w) ;
             
         end
         
