@@ -13,7 +13,7 @@ classdef Config_Boat < handle
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
         
-        type = 'fixed' ; % thruster configuration ('azi' or 'fixed' or 'direct')
+        type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
         Lbr = [-0.5215;-0.3048;-0.0123] ; % vector from C.O.M. to back-right thruster (m)
         Lbl = [-0.5215;0.3048;-0.0123] ; % vector from C.O.M. to back-left thruster (m)
