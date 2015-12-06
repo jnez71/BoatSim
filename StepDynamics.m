@@ -1,8 +1,16 @@
 % Sum forces and moments on boat
-F = Fg + Fb + Fd + Fw + Fv + env.Fz + Ft ;
-M = Mg + Mb + Md + Mw+ Mv + env.Mz + Mt ;
-% F = [0;0;0] ; % free body
-% M = [0;0;0] ; % free body
+if env.active
+    F = Fg + Fb + Fd + Fw + Fv + env.Fz ;
+    M = Mg + Mb + Md + Mw + Mv + env.Mz ;
+else
+    F = [0;0;0] ;
+    M = [0;0;0] ;
+end
+
+if robot.active
+    F = F + Ft ;
+    M = M + Mt ;
+end
 
 % translational
 state.p = state.p + state.v*sim.dt ;

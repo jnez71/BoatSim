@@ -26,12 +26,14 @@ ui_env = uicontrol('String', 'env', 'Position', [pbps(4) pbrh pbw pbh], 'Callbac
 ui_sim = uicontrol('String', 'sim', 'Position', [pbps(5) pbrh pbw pbh], 'Callback', @(hObject, eventdata, handles) ui_sim_callback(hObject, eventdata, sim)) ;
 ui_cam = uicontrol('String', 'center', 'Position', [pbps(6) pbrh pbw pbh], 'Callback', @(hObject, eventdata, handles) ui_cam_callback(hObject, eventdata, sim, state)) ;
 ui_quit = uicontrol('String', 'quit', 'Position', [pbps(7) pbrh pbw pbh], 'Callback', @(hObject, eventdata, handles) ui_quit_callback(hObject, eventdata, sim)) ;
+
+% Initialize text displays
 ui_time = uicontrol('Style', 'text', 'String', 'Time:', 'Position', [pbps(8) 2.25*pbrh+1 pbw*4 pbh/2]) ;
-ui_perror = uicontrol('Style', 'text', 'String', 'Position Error:', 'Position', [pbps(12) 2.25*pbrh+1 pbw*4 pbh/2]) ;
-ui_yawerror = uicontrol('Style', 'text', 'String', 'Yaw Error:', 'Position', [pbps(16) 2.25*pbrh+1 pbw*4 pbh/2]) ;
+ui_error = uicontrol('Style', 'text', 'String', 'Error:', 'Position', [pbps(12) 2.25*pbrh+1 pbw*4 pbh/2]) ;
+ui_thrust = uicontrol('Style', 'text', 'String', 'Thrusters:', 'Position', [pbps(16) 2.25*pbrh+1 pbw*6 pbh/2]) ;
 ui_position = uicontrol('Style', 'text', 'String', 'Position:', 'Position', [pbps(8) pbrh-1 pbw*4 pbh/2]) ;
 ui_velocity = uicontrol('Style', 'text', 'String', 'Velocity:', 'Position', [pbps(12) pbrh-1 pbw*4 pbh/2]) ;
-ui_orientation = uicontrol('Style', 'text', 'String', 'Yaw:', 'Position', [pbps(16) pbrh-1 pbw*4 pbh/2]) ;
+ui_orientation = uicontrol('Style', 'text', 'String', 'Yaw:', 'Position', [pbps(16) pbrh-1 pbw*6 pbh/2]) ;
 
 
 Draw3D ; % draw first frame

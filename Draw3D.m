@@ -12,10 +12,10 @@ material('dull') ; % body material
 % Update displayed text
 timestring = strcat({'Time:  '}, num2str(round(state.t.*100)./100)) ;
 set(ui_time, 'String', timestring) ;
-perrorstring = strcat({'Position Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2)].*100)./100)) ;
-set(ui_perror, 'String', perrorstring) ;
-yawerrorstring = strcat({'Yaw Error:  '}, num2str(round((robot.yDes(1)-state.th(3)).*(180/pi).*100)./100)) ;
-set(ui_yawerror, 'String', yawerrorstring) ;
+errorstring = strcat({'Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2), (robot.yDes(1)-state.th(3)).*(180/pi)].*100)./100)) ;
+set(ui_error, 'String', errorstring) ;
+thruststring = strcat({'Thrusters:  '}, num2str(round(state.thrusters.*100)./100)) ;
+set(ui_thrust, 'String', thruststring) ;
 positionstring = strcat({'Position:  '}, num2str(round([state.p(1), state.p(2), state.p(3)].*100)./100)) ;
 set(ui_position, 'String', positionstring) ;
 velocitystring = strcat({'Velocity:  '}, num2str(round([state.v(1), state.v(2), state.v(3)].*100)./100)) ;
@@ -29,11 +29,91 @@ waterGraphic = patch([sim.windowSize(1),sim.windowSize(2),sim.windowSize(2),sim.
 % Draw desired waypoint
 wpel = 0.25 ;
 waypointRec = [robot.pDes(1)-wpel, robot.pDes(1)+wpel, robot.pDes(2)-wpel, robot.pDes(2)+wpel] ;
-waypointGraphic_p = patch([waypointRec(1),waypointRec(2),waypointRec(2),waypointRec(1)],[waypointRec(3),waypointRec(3),waypointRec(4),waypointRec(4)],'red','FaceAlpha',0.75) ;
+waypointGraphic_p = patch([waypointRec(1),waypointRec(2),waypointRec(2),waypointRec(1)],[waypointRec(3),waypointRec(3),waypointRec(4),waypointRec(4)],'green','FaceAlpha',0.75) ;
 hDes = [cos(robot.yDes), sin(robot.yDes)] ;
 wph = 1 ;
-waypointGraphic_y = line([robot.pDes(1), robot.pDes(1)+hDes(1)], [robot.pDes(2), robot.pDes(2)+hDes(2)], [wph, wph], 'Color', 'red') ;
-waypointGraphic_y_ep = scatter3(robot.pDes(1), robot.pDes(2), wph, 'filled', 'MarkerFaceColor', 'red') ;
+waypointGraphic_y = line([robot.pDes(1), robot.pDes(1)+hDes(1)], [robot.pDes(2), robot.pDes(2)+hDes(2)], [wph, wph], 'Color', 'green') ;
+waypointGraphic_y_ep = scatter3(robot.pDes(1), robot.pDes(2), wph, 30, 'filled', 'MarkerFaceColor', 'green', 'MarkerEdgeColor','k') ;
 
 % Draw thrusts
-%%% TBI
+if sim.drawThrusts
+    Theight = 0.5 ;
+    Tscale = 0.5 * 1/boat.maxT ;
+    
+    if(strcmp(boat.type, 'azi'))
+        
+        Tbl = state.thrusters(1) ;
+        Tbr = state.thrusters(2) ;
+        phibl = state.thrusters(3) ;
+        phibr = state.thrusters(4) ;
+        
+        pTbl = state.p + state.R*boat.Lbl ;
+        pTbr = state.p + state.R*boat.Lbr ;
+        
+        hTbl = Tscale*Tbl*state.R*[cos(phibl), sin(phibl), 0]' ;
+        hTbr = Tscale*Tbr*state.R*[cos(phibr), sin(phibr), 0]' ;
+
+        thruster_bl = line([pTbl(1), pTbl(1)+hTbl(1)], [pTbl(2), pTbl(2)+hTbl(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        thruster_br = line([pTbr(1), pTbr(1)+hTbr(1)], [pTbr(2), pTbr(2)+hTbr(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        
+        thruster_bl_ep = scatter3(pTbl(1), pTbl(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        thruster_br_ep = scatter3(pTbr(1), pTbr(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        
+    elseif(strcmp(boat.type, 'fixed'))
+        
+        Tbl = state.thrusters(1) ;
+        Tbr = state.thrusters(2) ;
+        Tfl = state.thrusters(3) ;
+        Tfr = state.thrusters(4) ;
+        
+        pTbl = state.p + state.R*boat.Lbl ;
+        pTbr = state.p + state.R*boat.Lbr ;
+        pTfl = state.p + state.R*boat.Lfl ;
+        pTfr = state.p + state.R*boat.Lfr ;
+        
+        hTbl = Tscale*Tbl*state.R*boat.dbl ;
+        hTbr = Tscale*Tbr*state.R*boat.dbr ;
+        hTfl = Tscale*Tfl*state.R*boat.dfl ;
+        hTfr = Tscale*Tfr*state.R*boat.dfr ;
+        
+        thruster_bl = line([pTbl(1), pTbl(1)+hTbl(1)], [pTbl(2), pTbl(2)+hTbl(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        thruster_br = line([pTbr(1), pTbr(1)+hTbr(1)], [pTbr(2), pTbr(2)+hTbr(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        thruster_fl = line([pTfl(1), pTfl(1)+hTfl(1)], [pTfl(2), pTfl(2)+hTfl(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        thruster_fr = line([pTfr(1), pTfr(1)+hTfr(1)], [pTfr(2), pTfr(2)+hTfr(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+    
+        thruster_bl_ep = scatter3(pTbl(1), pTbl(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        thruster_br_ep = scatter3(pTbr(1), pTbr(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        thruster_fl_ep = scatter3(pTfl(1), pTfl(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        thruster_fr_ep = scatter3(pTfr(1), pTfr(2), Theight, 20, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+    
+    elseif(strcmp(boat.type, 'direct'))
+        
+        forcescale = 1/80 ;
+        torquescale = 1/60 ;
+        
+        forceGraphic = line([state.p(1), state.p(1) + forcescale*state.thrusters(1)], [state.p(2), state.p(2) + forcescale*state.thrusters(2)], [Theight, Theight], 'Color', 'red', 'LineWidth', 1.25) ;
+        forceGraphic_ep = scatter3(state.p(1), state.p(2), Theight, 30, 'MarkerFaceColor', 'red', 'MarkerEdgeColor','k') ;
+        torqueGraphic = line([state.p(1), state.p(1)], [state.p(2), state.p(2)], [Theight, Theight + torquescale*state.thrusters(3)], 'Color', 'm', 'LineWidth', 1.25) ;        
+        
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

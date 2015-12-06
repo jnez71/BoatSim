@@ -44,6 +44,22 @@ while(i <= nfinity && sim.quit == false)
                 delete(waypointGraphic_p) ;
                 delete(waypointGraphic_y) ;
                 delete(waypointGraphic_y_ep) ;
+                if(strcmp(boat.type, 'direct'))
+                    delete(forceGraphic) ;
+                    delete(forceGraphic_ep) ;
+                    delete(torqueGraphic) ;
+                elseif(strcmp(boat.type, 'fixed') || strcmp(boat.type, 'azi'))
+                    delete(thruster_bl) ;
+                    delete(thruster_bl_ep) ;
+                    delete(thruster_br) ;
+                    delete(thruster_br_ep) ;
+                    if(strcmp(boat.type, 'fixed'))
+                        delete(thruster_fl) ;
+                        delete(thruster_fl_ep) ;
+                        delete(thruster_fr) ;
+                        delete(thruster_fr_ep) ;
+                    end
+                end
                 Draw3D ;
                 frameTimer = 1 ;
             else
@@ -64,9 +80,11 @@ while(i <= nfinity && sim.quit == false)
     
     % Compute actuator dynamics based on robot decision
     if(strcmp(boat.type, 'azi'))
-        [Ft,Mt] = boat.AziThrust(command) ;
+        [Ft,Mt] = boat.AziThrust(state, command) ;
     elseif(strcmp(boat.type, 'fixed'))
-        [Ft,Mt] = boat.FixedThrust(command) ;
+        [Ft,Mt] = boat.FixedThrust(state, command) ;
+    elseif(strcmp(boat.type, 'direct'))
+        [Ft,Mt] = boat.DirectThrust(state, command) ;
     else
         error('Unknown boat thruster configuration. Check Config_Boat.m')
     end 

@@ -14,11 +14,10 @@ COMPLETED FEATURES:
 - realtime mode with 3D animation
 - gravity, buoyancy, and drag models
 - robot class designed for easy but general idea testing
+- user interface for realtime configuration
 
 IN PROGRESS:
-- user interface for realtime input (param dialog boxes, camera shifter)
 - thruster models
-- draw thrusters in animation
 
 INCOMPLETE FEATURES:
 - good documentation

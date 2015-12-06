@@ -17,11 +17,7 @@ while(true)
     
     switch choice
         
-        case 1
-            sim.type = choice ;
-            break ;
-            
-        case {2,3}
+        case {1,2,3}
             fprintf('\nInitial conditions:\n') ;
             fprintf('\n---\n\n') ;
             fprintf('position (m)\n') ;

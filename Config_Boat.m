@@ -13,7 +13,7 @@ classdef Config_Boat < handle
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
         
-        type = 'fixed' ; % thruster configuration ('azi' or 'fixed')
+        type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
         Lbr = [-0.5215;-0.3048;-0.0123] ; % vector from C.O.M. to back-right thruster (m)
         Lbl = [-0.5215;0.3048;-0.0123] ; % vector from C.O.M. to back-left thruster (m)
@@ -23,8 +23,8 @@ classdef Config_Boat < handle
         Lfl = [0.5215;0.3048;-0.0123] ; % vector from C.O.M. to front-left thruster (m)
         dfr = [0.7071;0.7071;0] ; % direction vector of front-right positive thrust
         dfl = [0.7071;-0.7071;0] ; % direction vector of front-left positive thrust
-        dbr = [-0.7071;0.7071;0] ; % direction vector of back-right positive thrust
-        dbl = [-0.7071;-0.7071;0] ; % direction vector of back-left positive thrust
+        dbr = [0.7071;-0.7071;0] ; % direction vector of back-right positive thrust
+        dbl = [0.7071;0.7071;0] ; % direction vector of back-left positive thrust
         
         % For type 'azi' only
         phiMax = pi ; % maximum azimuthing angle from +x about +z (rad, 0 to 2*pi)
@@ -39,17 +39,25 @@ classdef Config_Boat < handle
             boat.invI = inv(boat.I) ;
         end
         
-        function [Ft,Mt] = AziThrust(boat,command)
+        function [Ft,Mt] = AziThrust(boat, state, command)
             
             Ft = [0,0,0]' ;
             Mt = [0,0,0]' ;
             
         end
         
-        function [Ft,Mt] = FixedThrust(boat,command)
+        function [Ft,Mt] = FixedThrust(boat, state, command)
             
             Ft = [0,0,0]' ;
             Mt = [0,0,0]' ;
+            
+        end
+        
+        function [Ft,Mt] = DirectThrust(boat, state, command)
+            
+            state.thrusters = [command, 0] ;
+            Ft = [command(1:2),0]' ;
+            Mt = [0,0,command(3)]' ;
             
         end
         
