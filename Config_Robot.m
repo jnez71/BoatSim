@@ -61,14 +61,14 @@ classdef Config_Robot < handle
         
         function command = AziMap(robot,FtDes,MtDes,boat)
             
-            % [Tbl, TbR, phibl, phibr]
+            % [Tbl, Tbr, phibl, phibr]
             command = [0,0,0,0] ;
             
         end
         
         function command = FixedMap(robot,FtDes,MtDes,boat)
             
-            % [Tbl, TbR, Tfl, Tfr]
+            % [Tbl, Tbr, Tfl, Tfr]
             command = [0,0,0,0] ;
             
         end

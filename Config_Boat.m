@@ -13,7 +13,7 @@ classdef Config_Boat < handle
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
         
-        type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
+        type = 'fixed' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
         Lbr = [-0.5215;-0.3048;-0.0123] ; % vector from C.O.M. to back-right thruster (m)
         Lbl = [-0.5215;0.3048;-0.0123] ; % vector from C.O.M. to back-left thruster (m)
@@ -29,27 +29,80 @@ classdef Config_Boat < handle
         % For type 'azi' only
         phiMax = pi ; % maximum azimuthing angle from +x about +z (rad, 0 to 2*pi)
         phidot = pi ; % speed of azimuthing (rad/s)
-        phiR = 0 ; % initial back right azi angle (rad, 0 to phiMax)
-        phiL = 0 ; % initial back left azi angle (rad, 0 to phiMax)
+        
+        % Horrible programming that should never be seen. So many work-arounds
+        type_next ;
     end
     
     methods
         
         function boat = Config_Boat(boat)
             boat.invI = inv(boat.I) ;
+            boat.type_next = boat.type ;
         end
         
-        function [Ft,Mt] = AziThrust(boat, state, command)
+        function [Ft,Mt] = AziThrust(boat, state, sim, command)
             
-            Ft = [0,0,0]' ;
-            Mt = [0,0,0]' ;
+            Cl = command(1) ;
+            Cr = command(2) ;
+            phil = command(3) ;
+            phir = command(4) ;
+            
+            dphi = boat.phidot * sim.dt ; % maximum amount thruster can turn per sim step
+            
+            phil_error = phil - state.thrusters(3) ;
+            phir_error = phir - state.thrusters(4) ;
+            
+            if abs(phil_error) <= dphi
+                state.thrusters(3) = phil ;
+            else
+                state.thrusters(3) = state.thrusters(3) + dphi*sign(phil_error) ;
+            end
+            
+            if abs(phir_error) <= dphi
+                state.thrusters(4) = phir ;
+            else
+                state.thrusters(4) = state.thrusters(4) + dphi*sign(phir_error) ;
+            end
+            
+            if abs(Cl) <= boat.maxT
+                state.thrusters(1) = Cl ;
+            else
+                state.thrusters(1) = boat.maxT*sign(Cl) ;
+            end
+            
+            if abs(Cr) <= boat.maxT
+                state.thrusters(2) = Cr ;
+            else
+                state.thrusters(2) = boat.maxT*sign(Cr) ;
+            end
+            
+            Tl = Cl*[cos(state.thrusters(3)), sin(state.thrusters(3)), 0]' ;
+            Tr = Cr*[cos(state.thrusters(4)), sin(state.thrusters(4)), 0]' ;
+            
+            Ft = state.R*(Tl + Tr) ;
+            Mt = cross(boat.Lbl, Tl) + cross(boat.Lbr, Tr) ;
             
         end
         
         function [Ft,Mt] = FixedThrust(boat, state, command)
             
-            Ft = [0,0,0]' ;
-            Mt = [0,0,0]' ;
+            D = [boat.dbl,boat.dbr,boat.dfl,boat.dfr] ;
+            L = [boat.Lbl,boat.Lbr,boat.Lfl,boat.Lfr] ;
+            Ftb = [0;0;0] ;
+            Mt = [0;0;0] ;
+            
+            for i = [1:4]
+                if abs(command(i)) <= boat.maxT
+                    state.thrusters(i) = command(i) ;
+                else
+                    state.thrusters(i) = boat.maxT*sign(command(i)) ;
+                end
+                Tb = state.thrusters(i)*D(:,i) ;
+                Ftb = Ftb + Tb ;
+                Mt = Mt + cross(L(:,i), Tb) ;
+            end            
+            Ft = state.R*Ftb ;
             
         end
         

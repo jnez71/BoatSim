@@ -40,7 +40,9 @@ while(i <= nfinity && sim.quit == false)
             if(frameTimer == sim.showFrame)
                 % Delete last graphics
                 delete(boatGraphic) ;
-                delete(waterGraphic) ;
+                try
+                    delete(waterGraphic) ;
+                end
                 delete(waypointGraphic_p) ;
                 delete(waypointGraphic_y) ;
                 delete(waypointGraphic_y_ep) ;
@@ -80,7 +82,7 @@ while(i <= nfinity && sim.quit == false)
     
     % Compute actuator dynamics based on robot decision
     if(strcmp(boat.type, 'azi'))
-        [Ft,Mt] = boat.AziThrust(state, command) ;
+        [Ft,Mt] = boat.AziThrust(state, sim, command) ;
     elseif(strcmp(boat.type, 'fixed'))
         [Ft,Mt] = boat.FixedThrust(state, command) ;
     elseif(strcmp(boat.type, 'direct'))

@@ -61,7 +61,7 @@ classdef Config_Env < handle
             
         end
         
-        % switch-mode v^2 drag model with damping on rotations and z translation
+        % switch-mode v^2 irrotational drag model with damping on rotations and z translation
         function [Fd,Md] = Drag(env,boat,state)
             
             vBoat = state.R' * state.v ;

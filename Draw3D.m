@@ -14,7 +14,11 @@ timestring = strcat({'Time:  '}, num2str(round(state.t.*100)./100)) ;
 set(ui_time, 'String', timestring) ;
 errorstring = strcat({'Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2), (robot.yDes(1)-state.th(3)).*(180/pi)].*100)./100)) ;
 set(ui_error, 'String', errorstring) ;
-thruststring = strcat({'Thrusters:  '}, num2str(round(state.thrusters.*100)./100)) ;
+if(strcmp(boat.type, 'azi'))
+    thruststring = strcat({'Thrusters:  '}, num2str(round([state.thrusters(1:2),state.thrusters(3:4).*(180/pi)].*100)./100)) ;
+else
+    thruststring = strcat({'Thrusters:  '}, num2str(round(state.thrusters.*100)./100)) ;
+end
 set(ui_thrust, 'String', thruststring) ;
 positionstring = strcat({'Position:  '}, num2str(round([state.p(1), state.p(2), state.p(3)].*100)./100)) ;
 set(ui_position, 'String', positionstring) ;
@@ -24,8 +28,10 @@ orientationstring = strcat({'Yaw:  '}, num2str(round([state.th(3)].*100.*(180/pi
 set(ui_orientation, 'String', orientationstring) ;
 
 % Draw water
-waterGraphic = patch([sim.windowSize(1),sim.windowSize(2),sim.windowSize(2),sim.windowSize(1)],[sim.windowSize(3),sim.windowSize(3),sim.windowSize(4),sim.windowSize(4)],'blue','FaceAlpha',0.25) ;
-
+if env.active
+    waterGraphic = patch([sim.windowSize(1),sim.windowSize(2),sim.windowSize(2),sim.windowSize(1)],[sim.windowSize(3),sim.windowSize(3),sim.windowSize(4),sim.windowSize(4)],'blue','FaceAlpha',0.25) ;
+end
+    
 % Draw desired waypoint
 wpel = 0.25 ;
 waypointRec = [robot.pDes(1)-wpel, robot.pDes(1)+wpel, robot.pDes(2)-wpel, robot.pDes(2)+wpel] ;
@@ -37,6 +43,7 @@ waypointGraphic_y_ep = scatter3(robot.pDes(1), robot.pDes(2), wph, 30, 'filled',
 
 % Draw thrusts
 if sim.drawThrusts
+    boat.type = boat.type_next ;
     Theight = 0.5 ;
     Tscale = 0.5 * 1/boat.maxT ;
     
@@ -97,23 +104,3 @@ if sim.drawThrusts
         
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
