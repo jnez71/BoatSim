@@ -20,12 +20,16 @@ else
     thruststring = strcat({'Thrusters:  '}, num2str(round(state.thrusters.*100)./100)) ;
 end
 set(ui_thrust, 'String', thruststring) ;
+adaptstring = strcat({'Adaptive:  '}, num2str(round([robot.adaptDrag(1), robot.adaptDrag(2), robot.adaptDrag(3), robot.adaptDrag(4), robot.adaptDrag(5)].*100)./100)) ;
+set(ui_adapt, 'String', adaptstring) ;
 positionstring = strcat({'Position:  '}, num2str(round([state.p(1), state.p(2), state.p(3)].*100)./100)) ;
 set(ui_position, 'String', positionstring) ;
 velocitystring = strcat({'Velocity:  '}, num2str(round([state.v(1), state.v(2), state.v(3)].*100)./100)) ;
 set(ui_velocity, 'String', velocitystring) ;
 orientationstring = strcat({'Yaw:  '}, num2str(round([state.th(3)].*100.*(180/pi))./100), {'          '}, 'Rate:', num2str(round([state.w(3)].*(180/pi).*100)./100)) ;
 set(ui_orientation, 'String', orientationstring) ;
+integstring = strcat({'Integral:  '}, num2str(round([robot.adaptConst(1), robot.adaptConst(2), robot.adaptConst(3)].*100)./100)) ;
+set(ui_integ, 'String', integstring) ;
 
 % Draw water
 if env.active

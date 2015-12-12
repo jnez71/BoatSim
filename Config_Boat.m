@@ -12,6 +12,7 @@ classdef Config_Boat < handle
         
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
+        COD = [-0.1;0;0] ; % center of drag (m)
         
         type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
@@ -35,14 +36,13 @@ classdef Config_Boat < handle
     end
     
     methods
-        
         function boat = Config_Boat(boat)
             boat.invI = inv(boat.I) ;
             boat.type_next = boat.type ;
         end
         
+        
         function [Ft,Mt] = AziThrust(boat, state, sim, command)
-            
             Cl = command(1) ;
             Cr = command(2) ;
             phil = command(3) ;
@@ -81,12 +81,11 @@ classdef Config_Boat < handle
             Tr = Cr*[cos(state.thrusters(4)), sin(state.thrusters(4)), 0]' ;
             
             Ft = state.R*(Tl + Tr) ;
-            Mt = cross(boat.Lbl, Tl) + cross(boat.Lbr, Tr) ;
-            
+            Mt = cross(boat.Lbl, Tl) + cross(boat.Lbr, Tr) ;  
         end
         
+        
         function [Ft,Mt] = FixedThrust(boat, state, command)
-            
             D = [boat.dbl,boat.dbr,boat.dfl,boat.dfr] ;
             L = [boat.Lbl,boat.Lbr,boat.Lfl,boat.Lfr] ;
             Ftb = [0;0;0] ;
@@ -103,16 +102,24 @@ classdef Config_Boat < handle
                 Mt = Mt + cross(L(:,i), Tb) ;
             end            
             Ft = state.R*Ftb ;
-            
         end
+        
         
         function [Ft,Mt] = DirectThrust(boat, state, command)
-            
             state.thrusters = [command, 0] ;
+            
+            if abs(command(1)) > 250
+                command(1) = 250*sign(command(1)) ;
+            end
+            if abs(command(2)) > 250
+                command(2) = 250*sign(command(2)) ;
+            end
+            if abs(command(3)) > 400
+                command(3) = 400*sign(command(3)) ;
+            end
+            
             Ft = [command(1:2),0]' ;
             Mt = [0,0,command(3)]' ;
-            
-        end
-        
+        end 
     end
 end

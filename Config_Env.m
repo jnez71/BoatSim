@@ -11,7 +11,7 @@ classdef Config_Env < handle
         rho = 1000 ; % density of water (kg/m^3)
         % drag
         D = [8.8,213,800] ; % drag coefficients on translations (N/(m/s))
-        D_rot = [93,500,200] ; % drag coefficients on rotations (N*m/(rad/s))
+        D_rot = [93,500,180] ; % drag coefficients on rotations (N*m/(rad/s))
         vPlane = 5.14 ; % bodyframe x velocity necessary to start hydroplaning (m/s)
         PlaneFrac = 0.95 ; % fraction of forward drag coefficient while hydroplaning (N/(m/s)^2)
         % wind
@@ -61,7 +61,7 @@ classdef Config_Env < handle
             
         end
         
-        % switch-mode v^2 irrotational drag model with damping on rotations and z translation
+        % switch-mode v^2 drag model with damping on rotations and z translation
         function [Fd,Md] = Drag(env,boat,state)
             
             vBoat = state.R' * state.v ;
@@ -69,11 +69,13 @@ classdef Config_Env < handle
             if(state.p(3)>boat.height*1.1)
                 Fd = [0;0;0] ;
             end
-            Fd(1:2,1) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
+            Fd(1:2) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
             
             if(vBoat(1) >= env.vPlane)
                 Fd(1) = env.PlaneFrac * Fd(1) ;
             end
+            
+            %Fd(1:2) = -env.D(1:2)' .* vBoat(1:2) ; % OVERRIDE WITH V^1 FOR TESTING
             
             if state.p(3) < 0
                 if abs(state.p(3)) > boat.height
@@ -86,8 +88,8 @@ classdef Config_Env < handle
             end
             
             Fd = depthscale * state.R * Fd ;
-            Md = depthscale * -env.D_rot' .* (state.R' * state.w) ;
-            
+            MdC = [0;0;0] ; % cross(state.R*boat.COD, Fd) ; ROTATIONAL DRAG MOMENT?
+            Md = depthscale * (-env.D_rot'.*(state.R'*state.w) + [0;0;MdC(3)]) ;
         end
         
         % slowly varying uniform wind model

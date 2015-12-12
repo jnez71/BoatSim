@@ -4,17 +4,17 @@ classdef Config_Sim < handle
     
     properties
         dt = 0.01 ; % timestep (s)
-        T = 20 ; % timeseries length (s)
+        T = 60 ; % timeseries length (s)
         showFrame = 2 ; % how many iterations should be computed before the 3D animation is refreshed
         plotOutputs = false ; % should the arbitrary outputs of interest be plotted after a timeseries sim
         drawThrusts = true ; % should the robot's applied thrusts be drawn during realtime sims
         
-        p0 = [0,0,0.13]' ; % initial position [x,y,z]' in worldframe (m)
-        v0 = [0,0,0]' ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
+        p0 = [6;0;0.13] ; % initial position [x,y,z]' in worldframe (m)
+        v0 = [0;0;0] ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
         y0 = 0 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
-        w0 = [0,0,0]' ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
+        w0 = [0;0;0] ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
         
-        pDes0 = [3.5,-1]' ; % initial position waypoint [x,y] (m)
+        pDes0 = [0;0] ; % initial position waypoint [x,y] (m)
         yDes0 = -pi/4 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
