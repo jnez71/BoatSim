@@ -1,4 +1,5 @@
-verts = bsxfun(@plus,(state.R * vertsOrig'),state.p)' ; % translate and rotate original boat to current state
+% Translate and rotate original boat to current state
+verts = bsxfun(@plus,(state.R * vertsOrig'),state.p)' ;
 
 % Plot stl boat graphic
 object.vertices = verts;
@@ -15,9 +16,9 @@ set(ui_time, 'String', timestring) ;
 errorstring = strcat({'Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2), (robot.yDes(1)-state.th(3)).*(180/pi)].*100)./100)) ;
 set(ui_error, 'String', errorstring) ;
 if(strcmp(boat.type, 'azi'))
-    thruststring = strcat({'Thrusters:  '}, num2str(round([state.thrusters(1:2),state.thrusters(3:4).*(180/pi)].*100)./100)) ;
+    thruststring = strcat({'Command:  '}, num2str(round([state.thrusters(1:2),state.thrusters(3:4).*(180/pi)].*100)./100)) ;
 else
-    thruststring = strcat({'Thrusters:  '}, num2str(round(state.thrusters.*100)./100)) ;
+    thruststring = strcat({'Command:  '}, num2str(round(state.thrusters.*100)./100)) ;
 end
 set(ui_thrust, 'String', thruststring) ;
 adaptstring = strcat({'Adaptive:  '}, num2str(round([robot.adaptDrag(1), robot.adaptDrag(2), robot.adaptDrag(3), robot.adaptDrag(4), robot.adaptDrag(5)].*100)./100)) ;

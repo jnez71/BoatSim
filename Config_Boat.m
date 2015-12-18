@@ -12,7 +12,7 @@ classdef Config_Boat < handle
         
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
-        COD = [-0.1;0;0] ; % center of drag (m)
+        COD = [-0.01;0;-0.9*0.2025] ; % center of drag (m)
         
         type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
@@ -43,71 +43,78 @@ classdef Config_Boat < handle
         
         
         function [Ft,Mt] = AziThrust(boat, state, sim, command)
+            % unpack commands into thrusts and angles
             Cl = command(1) ;
             Cr = command(2) ;
             phil = command(3) ;
             phir = command(4) ;
-            
-            dphi = boat.phidot * sim.dt ; % maximum amount thruster can turn per sim step
-            
+            % maximum amount thruster can turn per sim step
+            dphi = boat.phidot * sim.dt ;
+            % servo angle errors
             phil_error = phil - state.thrusters(3) ;
             phir_error = phir - state.thrusters(4) ;
-            
+            % step dynamics for left servo
             if abs(phil_error) <= dphi
                 state.thrusters(3) = phil ;
             else
                 state.thrusters(3) = state.thrusters(3) + dphi*sign(phil_error) ;
             end
-            
+            % step dynamics for right servo
             if abs(phir_error) <= dphi
                 state.thrusters(4) = phir ;
             else
                 state.thrusters(4) = state.thrusters(4) + dphi*sign(phir_error) ;
             end
-            
+            % left thruster saturation
             if abs(Cl) <= boat.maxT
                 state.thrusters(1) = Cl ;
             else
                 state.thrusters(1) = boat.maxT*sign(Cl) ;
             end
-            
+            % right thruster saturation
             if abs(Cr) <= boat.maxT
                 state.thrusters(2) = Cr ;
             else
                 state.thrusters(2) = boat.maxT*sign(Cr) ;
             end
-            
+            % compute thrust components with current azi angles and magnitudes
             Tl = Cl*[cos(state.thrusters(3)), sin(state.thrusters(3)), 0]' ;
             Tr = Cr*[cos(state.thrusters(4)), sin(state.thrusters(4)), 0]' ;
-            
+            % convert components to wrench with thruster geometry
             Ft = state.R*(Tl + Tr) ;
             Mt = cross(boat.Lbl, Tl) + cross(boat.Lbr, Tr) ;  
         end
         
         
         function [Ft,Mt] = FixedThrust(boat, state, command)
+            % pack thruster geometries into convenient matrices
             D = [boat.dbl,boat.dbr,boat.dfl,boat.dfr] ;
             L = [boat.Lbl,boat.Lbr,boat.Lfl,boat.Lfr] ;
             Ftb = [0;0;0] ;
             Mt = [0;0;0] ;
-            
+            % go through each thruster finding thrust components
             for i = [1:4]
+                % thrust saturation
                 if abs(command(i)) <= boat.maxT
                     state.thrusters(i) = command(i) ;
                 else
                     state.thrusters(i) = boat.maxT*sign(command(i)) ;
                 end
+                % components
                 Tb = state.thrusters(i)*D(:,i) ;
+                % add this contributor to the wrench with body frame force
                 Ftb = Ftb + Tb ;
                 Mt = Mt + cross(L(:,i), Tb) ;
-            end            
+            end
+            % world frame force
             Ft = state.R*Ftb ;
         end
         
         
         function [Ft,Mt] = DirectThrust(boat, state, command)
+            % directly unpack command into thrusters
             state.thrusters = [command, 0] ;
-            
+            % saturations
             if abs(command(1)) > 250
                 command(1) = 250*sign(command(1)) ;
             end
@@ -117,9 +124,9 @@ classdef Config_Boat < handle
             if abs(command(3)) > 400
                 command(3) = 400*sign(command(3)) ;
             end
-            
+            % wrench
             Ft = [command(1:2),0]' ;
             Mt = [0,0,command(3)]' ;
-        end 
+        end
     end
 end

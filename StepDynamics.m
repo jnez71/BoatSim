@@ -12,13 +12,13 @@ if robot.active
     M = M + Mt ;
 end
 
-% translational
+% Translational increment
 state.p = state.p + state.v*sim.dt ;
 accel = F / boat.m ;
 state.v = state.v + accel*sim.dt ;
 
-% rotational
-L = state.R*boat.I*state.R' * state.w ;
+% Rotational increment
+L = state.R*boat.I*state.R' * state.w ; % angular momentum
 wMag = norm(state.w) ;
 wb = state.R'*state.w ;
 if(wMag >= 0.00001)
@@ -41,5 +41,5 @@ end
 L = L + state.R*M*sim.dt ;
 state.w = (state.R*boat.I*state.R') \ L ;
 
-% time increment
+% Time increment
 state.t = state.t + sim.dt ;

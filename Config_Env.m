@@ -32,18 +32,15 @@ classdef Config_Env < handle
     end
     
     methods
-        
         % flat-world uniform gravity model
         function [Fg,Mg] = Gravity(env,boat,state)
-            
             Fg = [0,0,-(boat.m)*(env.g)]' ;
             Mg = [0,0,0]' ;
-            
         end
+        
         
         % small angles hydrostatic buoyancy model
         function [Fb,Mb] = Buoyancy(env,boat,state)
-            
             Fbz = env.rho * boat.svol(1) * (boat.height - state.p(3)) * env.g ;
             if(Fbz < 0)
                 Fb = [0,0,0]' ;
@@ -58,25 +55,24 @@ classdef Config_Env < handle
                 Mb_pitch = -env.rho * boat.svol(3) * state.th(2) * env.g ;
                 Mb = [Mb_roll,Mb_pitch,0]' ;
             end
-            
         end
+        
         
         % switch-mode v^2 drag model with damping on rotations and z translation
         function [Fd,Md] = Drag(env,boat,state)
-            
-            vBoat = state.R' * state.v ;
+            % Boat frame drag force
+            vBoat = state.R' * (state.v + cross(state.w,boat.COD)) ;
             Fd(3,1) = -env.D(3) * vBoat(3) ;
             if(state.p(3)>boat.height*1.1)
                 Fd = [0;0;0] ;
             end
             Fd(1:2) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
-            
+            %Fd(1:2) = -env.D(1:2)' .* vBoat(1:2) ; % alternative v^1 drag
+            % Switch to hydroplaning
             if(vBoat(1) >= env.vPlane)
                 Fd(1) = env.PlaneFrac * Fd(1) ;
             end
-            
-            %Fd(1:2) = -env.D(1:2)' .* vBoat(1:2) ; % OVERRIDE WITH V^1 FOR TESTING
-            
+            % Scale drag coefficients by submerged depth
             if state.p(3) < 0
                 if abs(state.p(3)) > boat.height
                     depthscale = 1 + boat.height ;
@@ -86,28 +82,22 @@ classdef Config_Env < handle
             else
                 depthscale = 1 ;
             end
-            
             Fd = depthscale * state.R * Fd ;
-            MdC = [0;0;0] ; % cross(state.R*boat.COD, Fd) ; ROTATIONAL DRAG MOMENT?
-            Md = depthscale * (-env.D_rot'.*(state.R'*state.w) + [0;0;MdC(3)]) ;
+            Md = depthscale * (-env.D_rot'.*(state.R'*state.w) + cross(state.R*boat.COD,[Fd(1:2);0])) ;
         end
+        
         
         % slowly varying uniform wind model
         function [Fw,Mw] = Wind(env,boat,state)
-            
-            Fw = [0,0,0]' ;%%%tbi%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            Fw = [0,0,0]' ;%%%TBI%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             Mw = [0,0,0]' ;
-            
         end
+        
         
         % wide-line waves model
         function [Fv,Mv] = Waves(env,boat,state)
-            
-            Fv = [0,0,0]' ;%%%%%%%tbi%%%%%%%%%%%%%%%%%%%%%%%%5
+            Fv = [0,0,0]' ;%%%TBI%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             Mv = [0,0,0]' ;
-            
         end
-        
     end
-    
 end

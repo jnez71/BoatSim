@@ -20,7 +20,7 @@ classdef Config_Sim < handle
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
         spans = [-10 10 -10 10 -2 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
         windowSize = zeros(1,6) ; % initialized in constructor function
-        view0 = [-122 24] ; % initial viewing angle for 3D graphics, usually [-135 30]
+        view0 = [-122 24] ; % initial viewing angle for 3D graphics
         
         type = -1 ; % don't change, -1 implies currently uninitialized
         quit = false ; % don't change, obvious reasons
@@ -40,5 +40,4 @@ classdef Config_Sim < handle
             sim.windowSize(6) = sim.ocam(3) + sim.spans(6) ;
         end
     end
-    
 end

@@ -1,6 +1,6 @@
 classdef History < handle
-% Data is accumulated here for timeseries simulations. Holds the state, the time
-% and 3 arbitrary outputs of interest.
+% Data is accumulated here for timeseries simulations. Holds the state, the
+% timestamp, thrust commands, and 3 arbitrary outputs of interest.
     
     properties
         t ;

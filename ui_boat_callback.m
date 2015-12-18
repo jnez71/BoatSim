@@ -1,6 +1,5 @@
 function [] = ui_boat_callback(hObject, eventdata, boat, state)
 
-
 dlg_title = 'Configure Boat' ;
 
 prompt = {} ;
