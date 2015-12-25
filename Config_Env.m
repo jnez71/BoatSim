@@ -48,7 +48,7 @@ classdef Config_Env < handle
                 Fb = [0,0,Fbz]' ;
             end
             
-            if(state.p(3)>boat.height*1.25)
+            if(state.p(3)>boat.height)
                 Mb = [0,0,0]' ;
             else
                 Mb_roll = -env.rho * boat.svol(2) * state.th(1) * env.g ;
@@ -61,29 +61,31 @@ classdef Config_Env < handle
         % switch-mode v^2 drag model with damping on rotations and z translation
         function [Fd,Md] = Drag(env,boat,state)
             % Boat frame drag force
-            vBoat = state.R' * (state.v + cross(state.w,boat.COD)) ;
-            Fd(3,1) = -env.D(3) * vBoat(3) ;
-            if(state.p(3)>boat.height*1.1)
+            if(state.p(3)>boat.height)
                 Fd = [0;0;0] ;
-            end
-            Fd(1:2) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
-            %Fd(1:2) = -env.D(1:2)' .* vBoat(1:2) ; % alternative v^1 drag
-            % Switch to hydroplaning
-            if(vBoat(1) >= env.vPlane)
-                Fd(1) = env.PlaneFrac * Fd(1) ;
-            end
-            % Scale drag coefficients by submerged depth
-            if state.p(3) < 0
-                if abs(state.p(3)) > boat.height
-                    depthscale = 1 + boat.height ;
-                else
-                    depthscale = 1 - state.p(3) ;
-                end
+                Md = [0;0;0] ;
             else
-                depthscale = 1 ;
+                vBoat = state.R' * (state.v + cross(state.w,boat.COD)) ;
+                Fd(3,1) = -env.D(3) * vBoat(3) ;
+                Fd(1:2) = -env.D(1:2)' .* vBoat(1:2).^2 .* sign(vBoat(1:2)) ;
+                %Fd(1:2) = -env.D(1:2)' .* vBoat(1:2) ; % alternative v^1 drag
+                % Switch to hydroplaning
+                if(vBoat(1) >= env.vPlane)
+                    Fd(1) = env.PlaneFrac * Fd(1) ;
+                end
+                % Scale drag coefficients by submerged depth
+                if state.p(3) < 0
+                    if abs(state.p(3)) > boat.height
+                        depthscale = 1 + boat.height ;
+                    else
+                        depthscale = 1 - state.p(3) ;
+                    end
+                else
+                    depthscale = 1 ;
+                end
+                Fd = depthscale * state.R * Fd ;
+                Md = depthscale * (-env.D_rot'.*(state.R'*state.w) + cross(state.R*boat.COD,[Fd(1:2);0])) ;
             end
-            Fd = depthscale * state.R * Fd ;
-            Md = depthscale * (-env.D_rot'.*(state.R'*state.w) + cross(state.R*boat.COD,[Fd(1:2);0])) ;
         end
         
         

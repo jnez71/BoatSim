@@ -52,28 +52,17 @@ title yaw
 grid on
 
 if(sim.plotOutputs == true)
-    figure
-    
-    subplot(3,1,1)
-    plot(history.t,history.output(1,:),'k')
-    xlabel('s')
-    xlim([0,sim.T])
-    title('output1')
+    figure('Name', 'Output of Interest') ;
+    hold on
+    for idx = [1:length(state.output)]
+        plot(history.t,history.output(idx,:), 'Color', rand(1,3))
+        xlabel('s')
+        xlim([0,sim.T])
+    end
+    legend('d1', 'd2', 'Lc1', 'Lc2', 'Lr')
+    title('Drag Adaptation')
     grid on
-    
-    subplot(3,1,2)
-    plot(history.t,history.output(2,:),'k')
-    xlabel('s')
-    xlim([0,sim.T])
-    title('output2')
-    grid on
-    
-    subplot(3,1,3)
-    plot(history.t,history.output(3,:),'k')
-    xlabel('s')
-    xlim([0,sim.T])
-    title('output3')
-    grid on
+    hold off
 end
 
 figure('Name', 'BoatSim Results (parametric)') ;

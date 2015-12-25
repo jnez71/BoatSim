@@ -24,7 +24,7 @@ classdef State < handle
             state.R = [cos(sim.y0),-sin(sim.y0),0 ; sin(sim.y0),cos(sim.y0),0 ; 0,0,1] ;
             state.heading = state.R(:,1) ;
             state.thrusters = [0, 0, 0, 0] ;
-            state.output = [-1,-1,-1]' ;
+            state.output = [0;0;0;0;0] ;
         end
     end
     

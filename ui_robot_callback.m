@@ -35,11 +35,14 @@ default(9) = cellstr(mat2str(robot.ka)) ;
 prompt(10) = cellstr('Trajectory Type') ;
 default(10) = cellstr(robot.trajectory_type) ;
 
-prompt(11) = cellstr('Polar Path Radius') ;
-default(11) = cellstr(mat2str(robot.tradius)) ;
+prompt(11) = cellstr('Velocity Profile Maximum') ;
+default(11) = cellstr(mat2str(robot.tVmax)) ;
 
-prompt(12) = cellstr('Active?') ;
-default(12) = cellstr(mat2str(robot.active)) ;
+prompt(12) = cellstr('Polar Path Radius') ;
+default(12) = cellstr(mat2str(robot.tRadius)) ;
+
+prompt(13) = cellstr('Active?') ;
+default(13) = cellstr(mat2str(robot.active)) ;
 
 [answer] = inputdlg(prompt, dlg_title, 1, default) ;
 if isempty(answer)
@@ -56,8 +59,9 @@ ctype = answer{3} ;
 [kG, status] = str2num(answer{8}) ;
 [ka, status] = str2num(answer{9}) ;
 ttype = answer{10} ;
-[radius, status] = str2num(answer{11}) ;
-[act, status] = str2num(answer{12}) ;
+[tVmax, status] = str2num(answer{11}) ;
+[radius, status] = str2num(answer{12}) ;
+[act, status] = str2num(answer{13}) ;
 
 robot.active = act ;
 if ~strcmp(robot.controller_type, ctype)
@@ -73,13 +77,14 @@ else
     robot.ki = ki ;
 end
 robot.kf = kf ;
-if ~strcmp(robot.trajectory_type, ttype) || ~isequal(robot.target(1:2), pTar) || robot.target(3) ~= yTar*pi/180 || robot.tradius ~= radius
+if ~strcmp(robot.trajectory_type, ttype) || ~isequal(robot.target(1:2), pTar) || robot.target(3) ~= yTar*pi/180 || robot.tRadius ~= radius
     robot.target(1:2) = pTar ;
     robot.target(3) = yTar*pi/180 ;
     robot.trajectory_type = ttype ;
-    robot.tradius = radius ;
-    robot.tchange = true ;
+    robot.tRadius = radius ;
+    robot.tChange = true ;
 end
+robot.tVmax = tVmax ;
 if kG(1) == -1
     robot.adaptDrag = [0;0;0;0;0] ;
 else

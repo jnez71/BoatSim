@@ -22,10 +22,11 @@ classdef History < handle
             history.v = zeros(3,length(history.t)) ;
             history.th = zeros(3,length(history.t)) ;
             history.w = zeros(3,length(history.t)) ;
-            history.output = zeros(3,length(history.t)) ;
             history.pDes = zeros(2,length(history.t)) ;
             history.yDes = zeros(1,length(history.t)) ;
             history.thrusters = zeros(4,length(history.t)) ;
+            history.output = zeros(5,length(history.t)) ;
+            
         end
         
         function record(history,state,robot,i)
@@ -34,10 +35,10 @@ classdef History < handle
             history.v(:,i) = state.v ;
             history.th(:,i) = state.th ;
             history.w(:,i) = state.w ;
-            history.output(:,i) = state.output ;
             history.pDes(:,i) = robot.pDes ;
             history.yDes(:,i) = robot.yDes ;
             history.thrusters(:,i) = state.thrusters' ;
+            history.output(:,i) = state.output ;
         end
         
     end

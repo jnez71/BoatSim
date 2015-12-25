@@ -12,6 +12,9 @@ if robot.active
     M = M + Mt ;
 end
 
+% Put output of interest into state for recording
+state.output = robot.adaptDrag ;
+
 % Translational increment
 state.p = state.p + state.v*sim.dt ;
 accel = F / boat.m ;
