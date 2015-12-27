@@ -7,14 +7,13 @@ classdef Config_Boat < handle
         m = 42 ; % total mass (kg)
         I = [4.86,0.02,1.38;0.02,15.80,0.01;1.38,0.01,18.50] ; % inertia tensor (kg*m^2)
         %I = [4.86,0,0;0,15.80,0;0,0,18.50] ; % simplified prismatic-principle inertia tensor
-        %I = diag([5,5,5]) ;
         invI ; % inertia tensor inverse is computed once upon Config_Boat construction
         
         height = 0.2025 ; % z distance from C.O.M. to bottom surface of the boat (m)
         svol = [0.58,0.58,0.58] ; % submerged volume coefficients for z, roll, and pitch (m^2 or m^3/rad)
         COD = [-0.01;0;-0.9*0.2025] ; % center of drag (m)
         
-        type = 'direct' ; % thruster configuration ('azi' or 'fixed' or 'direct')
+        type = 'fixed' ; % thruster configuration ('azi' or 'fixed' or 'direct')
         maxT = 120 ; % maximum thrust per thruster (N)
         Lbr = [-0.5215;-0.3048;-0.0123] ; % vector from C.O.M. to back-right thruster (m)
         Lbl = [-0.5215;0.3048;-0.0123] ; % vector from C.O.M. to back-left thruster (m)
@@ -43,7 +42,7 @@ classdef Config_Boat < handle
         
         
         function [Ft,Mt] = AziThrust(boat, state, sim, command)
-            % unpack commands into thrusts and angles
+            % unpack commands into desired thrusts and angles
             Cl = command(1) ;
             Cr = command(2) ;
             phil = command(3) ;
@@ -78,9 +77,9 @@ classdef Config_Boat < handle
                 state.thrusters(2) = boat.maxT*sign(Cr) ;
             end
             % compute thrust components with current azi angles and magnitudes
-            Tl = Cl*[cos(state.thrusters(3)), sin(state.thrusters(3)), 0]' ;
-            Tr = Cr*[cos(state.thrusters(4)), sin(state.thrusters(4)), 0]' ;
-            % convert components to wrench with thruster geometry
+            Tl = state.thrusters(1)*[cos(state.thrusters(3)), sin(state.thrusters(3)), 0]' ;
+            Tr = state.thrusters(2)*[cos(state.thrusters(4)), sin(state.thrusters(4)), 0]' ;
+            % convert components to wrench using thruster geometry
             Ft = state.R*(Tl + Tr) ;
             Mt = cross(boat.Lbl, Tl) + cross(boat.Lbr, Tr) ;  
         end
@@ -112,21 +111,22 @@ classdef Config_Boat < handle
         
         
         function [Ft,Mt] = DirectThrust(boat, state, command)
-            % directly unpack command into thrusters
-            state.thrusters = [command, 0] ;
             % saturations
-            if abs(command(1)) > 250
-                command(1) = 250*sign(command(1)) ;
+            command_sat = command ;
+            if abs(command_sat(1)) > 250
+                command_sat(1) = 250*sign(command_sat(1)) ;
             end
-            if abs(command(2)) > 250
-                command(2) = 250*sign(command(2)) ;
+            if abs(command_sat(2)) > 250
+                command_sat(2) = 250*sign(command_sat(2)) ;
             end
-            if abs(command(3)) > 400
-                command(3) = 400*sign(command(3)) ;
+            if abs(command_sat(3)) > 400
+                command_sat(3) = 400*sign(command_sat(3)) ;
             end
+            % unpack limited command into thrusters
+            state.thrusters = [command_sat, 0] ;
             % wrench
-            Ft = [command(1:2),0]' ;
-            Mt = [0,0,command(3)]' ;
+            Ft = [command_sat(1:2),0]' ;
+            Mt = [0,0,command_sat(3)]' ;
         end
     end
 end

@@ -34,11 +34,13 @@ type = answer{3} ;
 boat.m = mass ;
 boat.I(3,3) = inertia ;
 boat.invI = inv(boat.I) ;
-if (strcmp(type, 'fixed') || strcmp(type, 'azi') || strcmp(type, 'direct'))
-    boat.type_next = type ;
-    state.thrusters = [0,0,0,0] ;
-else
-    fprintf('\nInvalid thruster layout. Choose azi, fixed, or direct. \n') ;
+if ~strcmp(boat.type, type)
+    if (strcmp(type, 'fixed') || strcmp(type, 'azi') || strcmp(type, 'direct'))
+        boat.type_next = type ;
+        state.thrusters = [0,0,0,0] ;
+    else
+        fprintf('\nInvalid thruster layout. Choose azi, fixed, or direct. \n') ;
+    end
 end
 boat.maxT = thrust ;
 boat.phidot = phidot.*(pi/180) ;

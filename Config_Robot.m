@@ -42,7 +42,7 @@ classdef Config_Robot < handle
         end
         
         
-        function command = Decide(robot,state,boat)
+        function command = Decide(robot, state, boat)
             % read sensors
             stateMeas = robot.Sensors(state) ;
             % estimate state from sensor measurements
@@ -59,9 +59,9 @@ classdef Config_Robot < handle
             end
             % use applicable mapper to get command
             if(strcmp(boat.type, 'azi'))
-                command = AziMap(robot,FtDes,MtDes,boat) ;
+                command = AziMap(robot, FtDes, MtDes, stateEst, boat) ;
             elseif(strcmp(boat.type, 'fixed'))
-                command = FixedMap(robot,FtDes,MtDes,boat) ;
+                command = FixedMap(robot, FtDes, MtDes, stateEst, boat) ;
             elseif(strcmp(boat.type, 'direct'))
                 command = [FtDes', MtDes] ;
             else
@@ -70,7 +70,7 @@ classdef Config_Robot < handle
         end
         
         
-        function stateMeas = Sensors(robot,state) 
+        function stateMeas = Sensors(robot, state) 
             % STATE IS A HANDLE SO IT PASSES BY REFERENCE - BE CAREFUL
             % Pick off states
             % Add noise
@@ -78,7 +78,7 @@ classdef Config_Robot < handle
         end
         
         
-        function stateEst = Estimate(robot,stateMeas) 
+        function stateEst = Estimate(robot, stateMeas) 
             % Estimate full state from measurements
             stateEst = stateMeas ;%%%TBI%%%%%%%%%%%
         end
@@ -162,7 +162,7 @@ classdef Config_Robot < handle
         end
         
         
-        function [FtDes,MtDes] = Controller_PID(robot,stateEst, boat)
+        function [FtDes,MtDes] = Controller_PID(robot, stateEst, boat)
             if strcmp(robot.controller_type, 'pd')
                 kiW = [0;0;0] ;
             else
@@ -210,15 +210,26 @@ classdef Config_Robot < handle
         end
         
         
-        function command = AziMap(robot,FtDes,MtDes,boat)
+        function command = AziMap(robot, FtDes, MtDes, stateEst, boat)
             % [Tbl, Tbr, phibl, phibr]
-            command = [0,0,0,0] ;%%%TBI%%%%%%%%%%%
+            command = [-80,11000,pi/3,-pi] ;%(testwrench)%%TBI%%%%%%%%%%%
         end
         
         
-        function command = FixedMap(robot,FtDes,MtDes,boat)
+        function command = FixedMap(robot, FtDes, MtDes, stateEst, boat)
             % [Tbl, Tbr, Tfl, Tfr]
-            command = [0,0,0,0] ;%%%TBI%%%%%%%%%%%
+            B_trans = [boat.dbl, boat.dbr, boat.dfl, boat.dfr] ;
+            B_rot = [cross(boat.Lbl, boat.dbl), cross(boat.Lbr, boat.dbr), cross(boat.Lfl, boat.dfl), cross(boat.Lfr, boat.dfr)] ;
+            B_world = [stateEst.R * B_trans ; stateEst.R * B_rot] ;
+            B_world = [B_world(1:2, :); B_world(6, :)] ;
+            wrench = [FtDes; MtDes] ;
+            % B * command' = wrench
+            command = (pinv(B_world) * wrench)' ;
+            % compute wrench error
+            %wrench_error = wrench - B_world*command' ;
+            %if norm(wrench_error) > 0.01 % some tolerance
+            %   wrench_error % display error
+            %end
         end
         
         

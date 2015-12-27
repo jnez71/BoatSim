@@ -16,9 +16,9 @@ set(ui_time, 'String', timestring) ;
 errorstring = strcat({'Error:  '}, num2str(round([robot.pDes(1)-state.p(1), robot.pDes(2)-state.p(2), (robot.yDes(1)-state.th(3)).*(180/pi)].*100)./100)) ;
 set(ui_error, 'String', errorstring) ;
 if(strcmp(boat.type, 'azi'))
-    thruststring = strcat({'Command:  '}, num2str(round([state.thrusters(1:2),state.thrusters(3:4).*(180/pi)].*100)./100)) ;
+    thruststring = strcat({'Command:  '}, num2str(round([command(1:2),command(3:4).*(180/pi)].*100)./100)) ;
 else
-    thruststring = strcat({'Command:  '}, num2str(round(state.thrusters.*100)./100)) ;
+    thruststring = strcat({'Command:  '}, num2str(round(command.*100)./100)) ;
 end
 set(ui_thrust, 'String', thruststring) ;
 adaptstring = strcat({'Adaptive:  '}, num2str(round([robot.adaptDrag(1), robot.adaptDrag(2), robot.adaptDrag(3), robot.adaptDrag(4), robot.adaptDrag(5)].*100)./100)) ;
@@ -27,7 +27,7 @@ positionstring = strcat({'Position:  '}, num2str(round([state.p(1), state.p(2), 
 set(ui_position, 'String', positionstring) ;
 velocitystring = strcat({'Velocity:  '}, num2str(round([state.v(1), state.v(2), state.v(3)].*100)./100)) ;
 set(ui_velocity, 'String', velocitystring) ;
-orientationstring = strcat({'Yaw:  '}, num2str(round([state.th(3)].*100.*(180/pi))./100), {'          '}, 'Rate:', num2str(round([state.w(3)].*(180/pi).*100)./100)) ;
+orientationstring = strcat({'Yaw:  '}, num2str(round([state.th(3)].*100.*(180/pi))./100), {'          '}, 'Rate: ', num2str(round([state.w(3)].*(180/pi).*100)./100)) ;
 set(ui_orientation, 'String', orientationstring) ;
 integstring = strcat({'Integral:  '}, num2str(round([robot.adaptConst(1), robot.adaptConst(2), robot.adaptConst(3)].*100)./100)) ;
 set(ui_integ, 'String', integstring) ;
@@ -50,7 +50,7 @@ waypointGraphic_y_ep = scatter3(robot.pDes(1), robot.pDes(2), wph, 30, 'filled',
 if sim.drawThrusts
     boat.type = boat.type_next ;
     Theight = 0.5 ;
-    Tscale = 0.5 * 1/boat.maxT ;
+    Tscale = 1/boat.maxT ;
     
     if(strcmp(boat.type, 'azi'))
         

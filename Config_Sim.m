@@ -9,18 +9,18 @@ classdef Config_Sim < handle
         plotOutputs = true ; % should the arbitrary outputs of interest be plotted after a timeseries sim
         drawThrusts = true ; % should the robot's applied thrusts be drawn during realtime sims
         
-        p0 = [0;0;0.13] ; % initial position [x,y,z]' in worldframe (m)
-        v0 = [0;0;0] ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
-        y0 = 0 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
-        w0 = [0;0;0] ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
+        p0 = [7; -7; 0.13] ; % initial position [x,y,z]' in worldframe (m)
+        v0 = [0; 0; 0] ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
+        y0 = pi/2 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
+        w0 = [0; 0; 0] ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
         
-        pDes0 = [-20;30] ; % initial position waypoint [x,y] (m)
+        pDes0 = [0; 0] ; % initial position waypoint [x,y] (m)
         yDes0 = 0 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
-        spans = [-15 15 -15 15 -2 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
+        spans = [-10 10 -10 10 -2 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
         windowSize = zeros(1,6) ; % initialized in constructor function
-        view0 = [-122 24] ; % initial viewing angle for 3D graphics
+        view0 = [-90 90] ; % initial viewing angle for 3D graphics
         
         type = -1 ; % don't change, -1 implies currently uninitialized
         quit = false ; % don't change, obvious reasons

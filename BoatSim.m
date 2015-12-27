@@ -1,5 +1,5 @@
 clc ;
-close all ;
+%close all ;
 clear all ;
 format short ;
 

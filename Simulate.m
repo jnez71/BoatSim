@@ -2,6 +2,7 @@
 boat = Config_Boat ;
 env = Config_Env ;
 robot = Config_Robot(sim) ;
+command = [0,0,0,0] ; % initialize global robot command value
 state = State(sim) ;
 
 % Initialize iteration and timing management variables
@@ -78,7 +79,7 @@ while(i <= nfinity && sim.quit == false)
     [Fv,Mv] = Waves(env,boat,state) ;
     
     % Compute robot's decision, either 4 thrusts or 2 thrusts and 2 angles
-    [command] = robot.Decide(state,boat) ;
+    command = robot.Decide(state,boat) ;
     
     % Compute actuator dynamics based on robot decision
     if(strcmp(boat.type, 'azi'))
@@ -89,7 +90,7 @@ while(i <= nfinity && sim.quit == false)
         [Ft,Mt] = boat.DirectThrust(state, command) ;
     else
         error('Unknown boat thruster configuration. Check Config_Boat.m')
-    end 
+    end
     
     % Use collected forces and moments to step the dynamics forward one dt
     StepDynamics ;
