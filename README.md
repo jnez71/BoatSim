@@ -60,3 +60,10 @@ If you are wondering about the boat graphic being used, have a look here: <http:
 BoatSim was created primarily for fun (who doesn't love playing god?). A lot of the coding is... dirty (the fact that all my configs inherent from Handle is hilarious), because I rushed finishing it so I could get started on a bigger simulation project that will stand upon the experience I got making this one. The new simulator is in Python and is called jSim. It may or may not exist yet.
 
 Don't get me wrong though, despite being messy internally, this sim works very well! Feel free to contact me (nez.jason7@gmail.com) if you want a better description of how it works.
+
+Pictures for Hype
+---
+![alt tag](http://s27.postimg.org/tt7ggn2fn/Boat_Sim_Pic_1.png)
+![alt tag](http://s3.postimg.org/wqplm1m3n/Boat_Sim_Pic_2.png)
+![alt tag](http://s30.postimg.org/isf577odd/Boat_Sim_Pic_3.png)
+![alt tag](http://s27.postimg.org/j2t0mg3kj/Boat_Sim_Pic_4.png)
