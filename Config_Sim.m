@@ -9,12 +9,12 @@ classdef Config_Sim < handle
         plotOutputs = true ; % should the arbitrary outputs of interest be plotted after a timeseries sim
         drawThrusts = true ; % should the robot's applied thrusts be drawn during realtime sims
         
-        p0 = [7; -7; 0.13] ; % initial position [x,y,z]' in worldframe (m)
+        p0 = [8; 0; 0.13] ; % initial position [x,y,z]' in worldframe (m)
         v0 = [0; 0; 0] ; % initial velocity [vx,vy,vz]' in worldframe (m/s)
         y0 = pi/2 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
         w0 = [0; 0; 0] ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
         
-        pDes0 = [0; 0] ; % initial position waypoint [x,y] (m)
+        pDes0 = [0; 7] ; % initial position waypoint [x,y] (m)
         yDes0 = 0 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)

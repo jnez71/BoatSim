@@ -12,7 +12,7 @@ classdef Config_Robot < handle
         wDes ;
         aaDes ;
         controller_type = 'adaptive' ; % 'pid', 'pd', or 'adaptive'
-        trajectory_type = 'linear' ; % 'linear', 'arc'(TBI), 'circle', or 'polar' (TBI)
+        trajectory_type = 'circle' ; % 'linear', 'arc'(TBI), 'circle', or 'polar' (TBI)
         tChange = false ;
         tVmax = [3; 0.1; 1] ; % m/s, m/s, rad/s
         tRadius = 8 ; % m
@@ -144,7 +144,7 @@ classdef Config_Robot < handle
                 % Simple parametric circle function of time
                 time = stateEst.t ;
                 r = robot.tRadius ;
-                f = 2*pi/10 ;
+                f = 2*pi/15 ;
                 robot.pDes = [r*cos(f*time); r*sin(f*time)] ;
                 robot.yDes = mod(f*time+pi/2, 2*pi) ;
                 if robot.yDes > pi
