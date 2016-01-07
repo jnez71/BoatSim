@@ -225,6 +225,11 @@ classdef Config_Robot < handle
             wrench = [FtDes; MtDes] ;
             % B * command' = wrench
             command = (pinv(B_world) * wrench)' ;
+            % if command is not attainable, scale back linearly
+            command_max = max(command) ;
+            if command_max > boat.maxT
+                command = (boat.maxT / command_max) * command ;
+            end
             % compute wrench error
             %wrench_error = wrench - B_world*command' ;
             %if norm(wrench_error) > 0.01 % some tolerance
