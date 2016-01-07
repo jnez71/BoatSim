@@ -11,6 +11,7 @@ zlabel('Z') ;
 axis('image') ; % set uniform axis scaling for proper image display
 view(sim.view0) ; % set initial viewing angle
 camlight('headlight') ; % lighting
+whitebg('white'); % figure background color
 
 hold on ; % lock this figure as the active figure
 

@@ -35,39 +35,43 @@ while(i <= nfinity && sim.quit == false)
         % Print values to monitor
         %fprintf('\npx: %g  |  py: %g  |  yaw: %g   |||   vx: %g  |  vy: %g  |  yawRate: %g   \n',state.p(1),state.p(2),state.th(1),state.v(1),state.v(2),state.w(1)) ;
         % Draw for 2D or 3D
-        if(sim.type == 2)
-            Draw2D ;
-        elseif(sim.type == 3)
-            if(frameTimer == sim.showFrame)
-                % Delete last graphics
-                delete(boatGraphic) ;
-                try
-                    delete(waterGraphic) ;
-                end
-                delete(waypointGraphic_p) ;
-                delete(waypointGraphic_y) ;
-                delete(waypointGraphic_y_ep) ;
-                if(strcmp(boat.type, 'direct'))
-                    delete(forceGraphic) ;
-                    delete(forceGraphic_ep) ;
-                    delete(torqueGraphic) ;
-                elseif(strcmp(boat.type, 'fixed') || strcmp(boat.type, 'azi'))
-                    delete(thruster_bl) ;
-                    delete(thruster_bl_ep) ;
-                    delete(thruster_br) ;
-                    delete(thruster_br_ep) ;
-                    if(strcmp(boat.type, 'fixed'))
-                        delete(thruster_fl) ;
-                        delete(thruster_fl_ep) ;
-                        delete(thruster_fr) ;
-                        delete(thruster_fr_ep) ;
-                    end
-                end
-                Draw3D ;
-                frameTimer = 1 ;
-            else
-                frameTimer = frameTimer+1 ;
+        if(frameTimer == sim.showFrame)
+            % Delete last graphics
+            delete(boatGraphic) ;
+            try
+                delete(waterGraphic) ;
             end
+            try
+            delete(waypointGraphic_p) ;
+            end
+            delete(waypointGraphic_y) ;
+            delete(waypointGraphic_y_ep) ;
+            if(strcmp(boat.type, 'direct'))
+                delete(forceGraphic) ;
+                delete(forceGraphic_ep) ;
+                try
+                delete(torqueGraphic) ;
+                end
+            elseif(strcmp(boat.type, 'fixed') || strcmp(boat.type, 'azi'))
+                delete(thruster_bl) ;
+                delete(thruster_bl_ep) ;
+                delete(thruster_br) ;
+                delete(thruster_br_ep) ;
+                if(strcmp(boat.type, 'fixed'))
+                    delete(thruster_fl) ;
+                    delete(thruster_fl_ep) ;
+                    delete(thruster_fr) ;
+                    delete(thruster_fr_ep) ;
+                end
+            end
+            if(sim.type == 3)
+                Draw3D ;
+            elseif(sim.type == 2)
+                Draw2D ;
+            end
+            frameTimer = 1 ;
+        else
+            frameTimer = frameTimer+1 ;
         end
     end
     

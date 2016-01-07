@@ -18,9 +18,9 @@ classdef Config_Sim < handle
         yDes0 = 0 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
-        spans = [-10 10 -10 10 -2 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
+        spans = [-10, 10, -10, 10, -2, 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
         windowSize = zeros(1,6) ; % initialized in constructor function
-        view0 = [-90 90] ; % initial viewing angle for 3D graphics
+        view0 = [-75, 40] ; % initial viewing angle for 3D graphics
         
         type = -1 ; % don't change, -1 implies currently uninitialized
         quit = false ; % don't change, obvious reasons

@@ -15,6 +15,8 @@ To design the robot, sim models, and/or initial conditions and parameters, adjus
 - All units are SI base
 - Body coordinates are XYZ = FORWARD LEFT UP
 
+TimeSeries mode runs the sim for Config_Sim.T seconds as fast as your computer can compute it and then plots the results immediately. It is not interactive. 2D mode is realtime and interactive, but it only shows the 2D cross-section of what's going on (even though full 3D physics are still computed). This is a bit easier for most computers to run graphics-wise. 3D mode is the same as 2D mode but a full 3D model is animated. Since animation is done manually with the MatLab plot tool, it's computationally intensive, but can run decently smooth on good computers in slightly under realtime.
+
 config_robot
 ---
 The only required function in this class is Decide(). It must output [command] which is a 1by4 array. It is given access to any of the other class instances (state, boat, sim...) and can use them however you design it. As you can see, sensor implementation is up to the robot designer. If the boat you are running is an...
@@ -53,9 +55,7 @@ Simulation parameters like timestep, duration (for timeseries sims), and initial
 
 Notes
 ---
-If you are wondering about the boat graphic being used, have a look here: <http://propagator.org/?page_id=1765>.
-
-2D mode was inteded to be used if your computer is a bit slow doing the full 3D sim, but it will probably never be implemented because it isn't that interesting (making the 3D sim faster is a more interesting challenge).
+If you are wondering about the boat graphic being used for the 3D sim, have a look here: <http://propagator.org/?page_id=1765>.
 
 BoatSim was created primarily for fun (who doesn't love playing god?). A lot of the coding is... dirty (the fact that all my configs inherent from Handle is hilarious), because I rushed finishing it so I could get started on a bigger simulation project that will stand upon the experience I got making this one. The new simulator is in Python and is called jSim. It may or may not exist yet.
 

@@ -7,7 +7,7 @@ else
     M = [0;0;0] ;
 end
 
-if robot.active
+if robot.active && (state.p(3) < boat.height)
     F = F + Ft ;
     M = M + Mt ;
 end
