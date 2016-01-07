@@ -1,6 +1,7 @@
 % Plots for timeseries results
 
 figure('Name', 'BoatSim Results') ;
+whitebg('white'); % figure background color
 
 subplot(2,3,1)
 plot(history.t,history.p(1,:),'k',history.t,history.v(1,:),'b',history.t,history.pDes(1,:), 'r--')

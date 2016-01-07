@@ -4,14 +4,14 @@ vertsOrig = (0.0254 * eye(3) * vertsOrig')' ; % scale boat model to meters
 figure('Name', 'BoatSim') ; % open figure window
 grid on ; % draw grid lines so motion is more apparent
 
+axis('image') ; % set uniform axis scaling for proper image display
 axis(sim.windowSize) ; % set axis limits
 xlabel('X') ;
 ylabel('Y') ;
 zlabel('Z') ;
-axis('image') ; % set uniform axis scaling for proper image display
 view(sim.view0) ; % set initial viewing angle
 camlight('headlight') ; % lighting
-whitebg('white'); % figure background color
+whitebg('white') ; % figure background color
 
 hold on ; % lock this figure as the active figure
 

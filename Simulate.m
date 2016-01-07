@@ -120,6 +120,7 @@ if(sim.type == 1)
 end
 
 if(sim.quit == true)
-    close
+    whitebg('white') ; % figure background color
+    close ;
     fprintf('Quitting...\n') ;
 end

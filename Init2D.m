@@ -6,8 +6,8 @@ vertsOrig_x = [-1, 1, 1, -1] ;
 vertsOrig_y = [-0.5, -0.5, 0.5, 0.5] ;
 vertsOrig = [vertsOrig_x; vertsOrig_y] ;
 
-axis(sim.windowSize(1:4)) ; % set axis limits
 axis('image') ; % set uniform axis scaling for proper image display
+axis(sim.windowSize(1:4)) ; % set axis limits
 xlabel('X') ;
 ylabel('Y') ;
 whitebg('blue') ; % figure background color
