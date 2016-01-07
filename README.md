@@ -10,12 +10,12 @@ using the buttons in the bottom left of the figure.
 
 The initial conditions are displayed in the Command Window when the sim starts. Any errors or warnings will also be printed there so take a look if something behaves incorrectly.
 
+TimeSeries mode runs the sim for Config_Sim.T seconds as fast as your computer can compute it and then plots the results immediately. It is not interactive. 2D mode is realtime and interactive, but it only shows the 2D cross-section of what's going on (even though full 3D physics are still computed). This is a bit easier for most computers to run graphics-wise. 3D mode is the same as 2D mode but a full 3D model is animated. Since animation is done manually with the MatLab plot tool, it's computationally intensive, but can run decently smooth on good computers in slightly under realtime.
+
 To design the robot, sim models, and/or initial conditions and parameters, adjust the config_* files according to the details below.
 
 - All units are SI base
 - Body coordinates are XYZ = FORWARD LEFT UP
-
-TimeSeries mode runs the sim for Config_Sim.T seconds as fast as your computer can compute it and then plots the results immediately. It is not interactive. 2D mode is realtime and interactive, but it only shows the 2D cross-section of what's going on (even though full 3D physics are still computed). This is a bit easier for most computers to run graphics-wise. 3D mode is the same as 2D mode but a full 3D model is animated. Since animation is done manually with the MatLab plot tool, it's computationally intensive, but can run decently smooth on good computers in slightly under realtime.
 
 config_robot
 ---
