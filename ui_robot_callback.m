@@ -6,10 +6,10 @@ prompt = {} ;
 default = {} ;
 
 prompt(1) = cellstr('Position Waypoint (m)') ;
-default(1) = cellstr(mat2str(robot.target(1:2))) ;
+default(1) = cellstr(mat2str(round(robot.target(1:2).*100)./100)) ;
 
 prompt(2) = cellstr('Yaw Waypoint (deg)') ;
-default(2) = cellstr(mat2str(robot.target(3)*180/pi)) ;
+default(2) = cellstr(mat2str(round(robot.target(3)*180/pi*100)/100)) ;
 
 prompt(3) = cellstr('Controller Type') ;
 default(3) = cellstr(robot.controller_type) ;

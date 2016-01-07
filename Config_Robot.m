@@ -17,14 +17,14 @@ classdef Config_Robot < handle
         tVmax = [3; 0.1; 1] ; % m/s, m/s, rad/s
         tRadius = 8 ; % m
         fullDist ;
-        kp = [150; 150; 200] ;
-        kd = [150; 150; 120] ;
+        kp = [150; 150; 250] ;
+        kd = [150; 150; 100] ;
         ki = [3; 3; 3] ;
         kf = [1; 1; 1] ;
         kG = 3*diag([1; 1; 1; 1; 1]) ;
         ka = [1; 1; 1] ;
         adaptConst = [0; 0; 0] ;
-        adaptDrag = [25; 50; 20; 0; 50] ;
+        adaptDrag = [25; 50; 20; -15; 50] ; % [d1 d2 Lc1 Lc2 Lr]
         timeStep ;
     end
     
@@ -154,6 +154,7 @@ classdef Config_Robot < handle
                 robot.wDes = f ;
                 robot.aDes = [-r*f^2*cos(f*time); -r*f^2*sin(f*time)] ;
                 robot.aaDes = 0 ;
+                robot.target = [robot.pDes ; robot.yDes] ;
             elseif strcmp(robot.trajectory_type, 'polar')
                 disp('traj TBI') %%%TBI
             else
