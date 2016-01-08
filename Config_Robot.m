@@ -131,7 +131,7 @@ classdef Config_Robot < handle
                 for idx = [1:2]
                     if abs(robot.vDes(idx)) > tVmaxW(idx)
                         robot.vDes(idx) = tVmaxW(idx)*sign(robot.vDes(idx)) ;
-                        robot.aDes = [0;0] ;
+                        robot.aDes(idx) = 0 ;
                     end
                 end
                 if abs(robot.wDes) > tVmaxW(3)
