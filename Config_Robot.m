@@ -227,7 +227,7 @@ classdef Config_Robot < handle
             % B * command' = wrench
             command = (pinv(B_world) * wrench)' ;
             % if command is not attainable, scale back linearly
-            command_max = max(command) ;
+            command_max = max(abs(command)) ;
             if command_max > boat.maxT
                 command = (boat.maxT / command_max) * command ;
             end
