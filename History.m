@@ -11,6 +11,8 @@ classdef History < handle
         output ;
         pDes ;
         yDes ;
+        vDes ;
+        wDes ;
         thrusters ;
     end
     
@@ -37,6 +39,8 @@ classdef History < handle
             history.w(:,i) = state.w ;
             history.pDes(:,i) = robot.pDes ;
             history.yDes(:,i) = robot.yDes ;
+            history.vDes(:,i) = robot.vDes ;
+            history.wDes(:,i) = robot.wDes ;
             history.thrusters(:,i) = state.thrusters' ;
             history.output(:,i) = state.output ;
         end

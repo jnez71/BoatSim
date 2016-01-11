@@ -4,8 +4,8 @@ figure('Name', 'BoatSim Results') ;
 whitebg('white'); % figure background color
 
 subplot(2,3,1)
-plot(history.t,history.p(1,:),'k',history.t,history.v(1,:),'b',history.t,history.pDes(1,:), 'r--')
-legend('Coordinate','Velocity', 'Desired')
+plot(history.t,history.p(1,:),'k',history.t,history.v(1,:),'b',history.t,history.pDes(1,:), 'r--', history.t,history.vDes(1,:), 'm--')
+legend('Coordinate','Velocity', 'Desired Coordinate', 'Desired Velocity')
 xlim([0,sim.T])
 xlabel('s')
 ylabel('meters')
@@ -13,7 +13,7 @@ title x
 grid on
 
 subplot(2,3,2)
-plot(history.t,history.p(2,:),'k',history.t,history.v(2,:),'b',history.t,history.pDes(2,:), 'r--')
+plot(history.t,history.p(2,:),'k',history.t,history.v(2,:),'b',history.t,history.pDes(2,:), 'r--', history.t,history.vDes(2,:), 'm--')
 xlim([0,sim.T])
 xlabel('s')
 ylabel('meters')
@@ -45,7 +45,7 @@ title pitch
 grid on
 
 subplot(2,3,6)
-plot(history.t,history.th(3,:).*(180/pi),'k',history.t,history.w(1,:).*(180/pi),'b',history.t,history.yDes(1,:).*(180/pi), 'r--')
+plot(history.t,history.th(3,:).*(180/pi),'k',history.t,history.w(1,:).*(180/pi),'b',history.t,history.yDes(1,:).*(180/pi), 'r--', history.t,history.wDes(1,:).*(180/pi), 'm--')
 xlim([0,sim.T])
 xlabel('s')
 ylabel('deg')

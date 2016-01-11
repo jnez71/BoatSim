@@ -14,17 +14,17 @@ classdef Config_Robot < handle
         controller_type = 'adaptive' ; % 'pid', 'pd', or 'adaptive'
         trajectory_type = 'circle' ; % 'linear', 'arc'(TBI), 'circle', or 'polar' (TBI)
         tChange = false ;
-        tVmax = [3; 0.1; 1] ; % m/s, m/s, rad/s
+        tVmax = [5; 0.7; 1.5] ; % m/s, m/s, rad/s
         tRadius = 8 ; % m
         fullDist ;
-        kp = [150; 150; 250] ;
-        kd = [150; 150; 100] ;
+        kp = [200; 200; 280] ;
+        kd = [200; 100; 100] ;
         ki = [3; 3; 3] ;
         kf = [1; 1; 1] ;
         kG = 3*diag([1; 1; 1; 1; 1]) ;
         ka = [1; 1; 1] ;
         adaptConst = [0; 0; 0] ;
-        adaptDrag = [25; 50; 20; -15; 50] ; % [d1 d2 Lc1 Lc2 Lr]
+        adaptDrag = [30; 100; -2; -10; 100] ; % [d1 d2 Lc1 Lc2 Lr]
         timeStep ;
     end
     
@@ -59,9 +59,9 @@ classdef Config_Robot < handle
             end
             % use applicable mapper to get command
             if(strcmp(boat.type, 'azi'))
-                command = AziMap(robot, FtDes, MtDes, stateEst, boat) ;
+                command = AziMap(robot, FtDes, MtDes, stateEst.R, boat) ;
             elseif(strcmp(boat.type, 'fixed'))
-                command = FixedMap(robot, FtDes, MtDes, stateEst, boat) ;
+                command = FixedMap(robot, FtDes, MtDes, stateEst.R, boat) ;
             elseif(strcmp(boat.type, 'direct'))
                 command = [FtDes', MtDes] ;
             else
@@ -109,35 +109,28 @@ classdef Config_Robot < handle
                 end
                 Edot = [-robot.vDes ; -robot.wDes] ;
                 wrench = kpW.*E + kdW.*Edot ;
-                % Virtual wrench saturation, eventually will use boat model and mapper
-                if abs(wrench(1)) > 250/2
-                    wrench(1) = 250/2*sign(wrench(1)) ;
-                end
-                if abs(wrench(2)) > 250/2
-                    wrench(2) = 250/2*sign(wrench(2)) ;
-                end
-                if abs(wrench(3)) > 400/2
-                    wrench(3) = 400/2*sign(wrench(3)) ;
-                end
+                % Virtual wrench saturation, currently using fixed mapper
+                B_trans = [boat.dbl, boat.dbr, boat.dfl, boat.dfr] ;
+                B_rot = [cross(boat.Lbl, boat.dbl), cross(boat.Lbr, boat.dbr), cross(boat.Lfl, boat.dfl), cross(boat.Lfr, boat.dfr)] ;
+                B_world = [RDes * B_trans ; RDes * B_rot] ;
+                B_world = [B_world(1:2, :); B_world(6, :)] ;
+                wrench = B_world * robot.FixedMap(wrench(1:2), wrench(3), RDes, boat)' ;
+                % Virtual environment based on desired max velocities
+                B_body = [B_trans ; B_rot] ;
+                FxMax_body = B_body * boat.maxT * ones(4,1) ;
+                FyMax_body = B_body * boat.maxT * [1; -1; -1; 1] ;
+                MzMax_body = B_body * boat.maxT * [-1; 1; -1; 1] ;
+                D_body = abs([FxMax_body(1);FyMax_body(2);MzMax_body(6)]) ./ robot.tVmax.^2 ;
+                vwDes_body = RDes' * [robot.vDes; robot.wDes] ;
+                dragDes_body = D_body .* vwDes_body .* abs(vwDes_body) ;
+                dragDes = RDes * dragDes_body ;
                 % Step virtual controller
-                robot.aDes = wrench(1:2)/boat.m ;
-                robot.aaDes = wrench(3)/boat.I(3,3) ;
+                robot.aDes = (wrench(1:2) - dragDes(1:2)) / boat.m ;
+                robot.aaDes = (wrench(3) - dragDes(3)) / boat.I(3,3) ;
                 robot.pDes = robot.pDes + robot.vDes*robot.timeStep ;
                 robot.yDes = robot.yDes + robot.wDes*robot.timeStep ;
                 robot.vDes = robot.vDes + robot.aDes*robot.timeStep ;
                 robot.wDes = robot.wDes + robot.aaDes*robot.timeStep ;
-                % Virtual imposed velocity maxima
-                tVmaxW = abs(RDes*robot.tVmax) ;
-                for idx = [1:2]
-                    if abs(robot.vDes(idx)) > tVmaxW(idx)
-                        robot.vDes(idx) = tVmaxW(idx)*sign(robot.vDes(idx)) ;
-                        robot.aDes(idx) = 0 ;
-                    end
-                end
-                if abs(robot.wDes) > tVmaxW(3)
-                    robot.wDes = tVmaxW(3)*sign(robot.wDes) ;
-                    robot.aaDes = 0 ;
-                end
             elseif strcmp(robot.trajectory_type, 'arc')
                 disp('traj TBI') %%%TBI
             elseif strcmp(robot.trajectory_type, 'circle')
@@ -217,11 +210,11 @@ classdef Config_Robot < handle
         end
         
         
-        function command = FixedMap(robot, FtDes, MtDes, stateEst, boat)
+        function command = FixedMap(robot, FtDes, MtDes, R, boat)
             % [Tbl, Tbr, Tfl, Tfr]
             B_trans = [boat.dbl, boat.dbr, boat.dfl, boat.dfr] ;
             B_rot = [cross(boat.Lbl, boat.dbl), cross(boat.Lbr, boat.dbr), cross(boat.Lfl, boat.dfl), cross(boat.Lfr, boat.dfr)] ;
-            B_world = [stateEst.R * B_trans ; stateEst.R * B_rot] ;
+            B_world = [R * B_trans ; R * B_rot] ;
             B_world = [B_world(1:2, :); B_world(6, :)] ;
             wrench = [FtDes; MtDes] ;
             % B * command' = wrench

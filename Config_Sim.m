@@ -14,8 +14,8 @@ classdef Config_Sim < handle
         y0 = pi/2 ; % initial yaw angle from +x about +z in worldframe (rad, -pi to pi)
         w0 = [0; 0; 0] ; % initial angular rates [rolling,pitching,yawing]' about bodyframe axes (rad/s)
         
-        pDes0 = [0; 7] ; % initial position waypoint [x,y] (m)
-        yDes0 = 0 ; % initial yaw waypoint (rad, -pi to pi)
+        pDes0 = [0; 8] ; % initial position waypoint [x,y] (m)
+        yDes0 = pi/2 ; % initial yaw waypoint (rad, -pi to pi)
         
         ocam = [0, 0, 0] ; % initial origin of 3D viewing window (m)
         spans = [-10, 10, -10, 10, -2, 5] ; % initial 3D axis limits, [xmin xmax ymin ymax zmin zmax] (m)
