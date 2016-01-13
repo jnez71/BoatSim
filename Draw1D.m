@@ -29,7 +29,7 @@ title z
 grid on
 
 subplot(2,3,4)
-plot(history.t,history.th(1,:).*(180/pi),'k',history.t,history.w(3,:).*(180/pi),'b')
+plot(history.t,history.th(1,:).*(180/pi),'k',history.t,history.w(1,:).*(180/pi),'b')
 xlim([0,sim.T])
 xlabel('s')
 ylabel('deg')
@@ -45,7 +45,7 @@ title pitch
 grid on
 
 subplot(2,3,6)
-plot(history.t,history.th(3,:).*(180/pi),'k',history.t,history.w(1,:).*(180/pi),'b',history.t,history.yDes(1,:).*(180/pi), 'r--', history.t,history.wDes(1,:).*(180/pi), 'm--')
+plot(history.t,history.th(3,:).*(180/pi),'k',history.t,history.w(3,:).*(180/pi),'b',history.t,history.yDes(1,:).*(180/pi), 'r--', history.t,history.wDes(1,:).*(180/pi), 'm--')
 xlim([0,sim.T])
 xlabel('s')
 ylabel('deg')
