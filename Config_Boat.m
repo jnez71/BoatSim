@@ -65,14 +65,17 @@ classdef Config_Boat < handle
                 state.thrusters(4) = state.thrusters(4) + dphi*sign(phir_error) ;
             end
             % left thruster saturation
+            state.saturated = false ;
             if abs(Cl) <= boat.maxT
                 state.thrusters(1) = Cl ;
+                state.saturated = true ;
             else
                 state.thrusters(1) = boat.maxT*sign(Cl) ;
             end
             % right thruster saturation
             if abs(Cr) <= boat.maxT
                 state.thrusters(2) = Cr ;
+                state.saturated = true ;
             else
                 state.thrusters(2) = boat.maxT*sign(Cr) ;
             end
@@ -92,12 +95,14 @@ classdef Config_Boat < handle
             Ftb = [0;0;0] ;
             Mt = [0;0;0] ;
             % go through each thruster finding thrust components
+            state.saturated = false ;
             for i = [1:4]
                 % thrust saturation
                 if abs(command(i)) <= boat.maxT
                     state.thrusters(i) = command(i) ;
                 else
                     state.thrusters(i) = boat.maxT*sign(command(i)) ;
+                    state.saturated = true ;
                 end
                 % components
                 Tb = state.thrusters(i)*D(:,i) ;
@@ -113,14 +118,18 @@ classdef Config_Boat < handle
         function [Ft,Mt] = DirectThrust(boat, state, command)
             % saturations
             command_sat = command ;
+            state.saturated = false ;
             if abs(command_sat(1)) > 250
                 command_sat(1) = 250*sign(command_sat(1)) ;
+                state.saturated = true ;
             end
             if abs(command_sat(2)) > 250
                 command_sat(2) = 250*sign(command_sat(2)) ;
+                state.saturated = true ;
             end
             if abs(command_sat(3)) > 400
                 command_sat(3) = 400*sign(command_sat(3)) ;
+                state.saturated = true ;
             end
             % unpack limited command into thrusters
             state.thrusters = [command_sat, 0] ;

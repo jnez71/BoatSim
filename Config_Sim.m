@@ -4,7 +4,7 @@ classdef Config_Sim < handle
     
     properties
         dt = 0.01 ; % timestep (s)
-        T = 20 ; % timeseries length (s)
+        T = 40 ; % timeseries length (s)
         showFrame = 2 ; % how many iterations should be computed before the 3D animation is refreshed
         plotOutputs = true ; % should the arbitrary outputs of interest be plotted after a timeseries sim
         drawThrusts = true ; % should the robot's applied thrusts be drawn during realtime sims

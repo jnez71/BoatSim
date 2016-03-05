@@ -60,8 +60,10 @@ if(sim.plotOutputs == true)
         xlabel('s')
         xlim([0,sim.T])
     end
-    legend('d1', 'd2', 'Lc1', 'Lc2', 'Lr')
-    title('Drag Adaptation')
+    if strcmp(robot.controller_type, 'adapt_gd')
+        legend('d1', 'd2', 'Lc1', 'Lc2', 'Lr')
+    end
+    title('Adaptation')
     grid on
     hold off
 end

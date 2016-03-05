@@ -18,7 +18,7 @@ classdef History < handle
     
     methods
         
-        function history = History(sim)
+        function history = History(sim, n_outputs)
             history.t = [0 : sim.dt : sim.T] ;
             history.p = zeros(3,length(history.t)) ;
             history.v = zeros(3,length(history.t)) ;
@@ -27,7 +27,7 @@ classdef History < handle
             history.pDes = zeros(2,length(history.t)) ;
             history.yDes = zeros(1,length(history.t)) ;
             history.thrusters = zeros(4,length(history.t)) ;
-            history.output = zeros(5,length(history.t)) ;
+            history.output = zeros(n_outputs,length(history.t)) ;
             
         end
         

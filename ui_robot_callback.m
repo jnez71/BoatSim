@@ -26,23 +26,26 @@ default(6) = cellstr(mat2str(robot.ki)) ;
 prompt(7) = cellstr('kf gains') ;
 default(7) = cellstr(mat2str(robot.kf)) ;
 
-prompt(8) = cellstr('kG gains') ;
-default(8) = cellstr(mat2str(diag(robot.kG))) ;
+prompt(8) = cellstr('ka gains') ;
+default(8) = cellstr(mat2str(robot.ka)) ;
 
-prompt(9) = cellstr('ka gains') ;
-default(9) = cellstr(mat2str(robot.ka)) ;
+prompt(9) = cellstr('kG gains') ;
+default(9) = cellstr(mat2str(robot.kG(1,1))) ;
 
-prompt(10) = cellstr('Trajectory Type') ;
-default(10) = cellstr(robot.trajectory_type) ;
+prompt(10) = cellstr('ku gains') ;
+default(10) = cellstr(mat2str(robot.ku(1,1))) ;
 
-prompt(11) = cellstr('Velocity Profile Maximum') ;
-default(11) = cellstr(mat2str(robot.tVmax)) ;
+prompt(11) = cellstr('Trajectory Type') ;
+default(11) = cellstr(robot.trajectory_type) ;
 
-prompt(12) = cellstr('Polar Path Radius') ;
-default(12) = cellstr(mat2str(robot.tRadius)) ;
+prompt(12) = cellstr('Velocity Profile Maximum') ;
+default(12) = cellstr(mat2str(robot.tVmax)) ;
 
-prompt(13) = cellstr('Active?') ;
-default(13) = cellstr(mat2str(robot.active)) ;
+prompt(13) = cellstr('Polar Path Radius') ;
+default(13) = cellstr(mat2str(robot.tRadius)) ;
+
+prompt(14) = cellstr('Active?') ;
+default(14) = cellstr(mat2str(robot.active)) ;
 
 [answer] = inputdlg(prompt, dlg_title, 1, default) ;
 if isempty(answer)
@@ -56,17 +59,22 @@ ctype = answer{3} ;
 [kd, status] = str2num(answer{5}) ;
 [ki, status] = str2num(answer{6}) ;
 [kf, status] = str2num(answer{7}) ;
-[kG, status] = str2num(answer{8}) ;
-[ka, status] = str2num(answer{9}) ;
-ttype = answer{10} ;
-[tVmax, status] = str2num(answer{11}) ;
-[radius, status] = str2num(answer{12}) ;
-[act, status] = str2num(answer{13}) ;
+[ka, status] = str2num(answer{8}) ;
+[kG, status] = str2num(answer{9}) ;
+[ku, status] = str2num(answer{10}) ;
+ttype = answer{11} ;
+[tVmax, status] = str2num(answer{12}) ;
+[radius, status] = str2num(answer{13}) ;
+[act, status] = str2num(answer{14}) ;
 
 robot.active = act ;
-if ~strcmp(robot.controller_type, ctype)
+if ~strcmp(robot.controller_type, ctype) || kG(1) == -1
     robot.adaptConst = [0;0;0] ;
-    robot.adaptDrag = [0;0;0;0;0] ;
+    if strcmp(ctype, 'adapt_cl')
+        robot.adaptDrag = zeros(robot.nparams,1) ;
+    else
+        robot.adaptDrag = zeros(5,1) ;
+    end
     robot.controller_type = ctype ;
 end
 robot.kp = kp ;
@@ -85,11 +93,12 @@ if ~strcmp(robot.trajectory_type, ttype) || ~isequal(robot.target(1:2), pTar) ||
     robot.tChange = true ;
 end
 robot.tVmax = tVmax ;
-if kG(1) == -1
-    robot.adaptDrag = [0;0;0;0;0] ;
-else
-    robot.kG = diag(kG) ;
-    robot.ka = ka ;
+robot.ka = ka ;
+robot.ku = ku(1)*eye(robot.nparams) ;
+if strcmp(robot.controller_type, 'adapt_gd')
+    robot.kG = kG(1)*eye(5) ;
+elseif strcmp(robot.controller_type, 'adapt_cl')
+    robot.kG = kG(1)*eye(robot.nparams) ;
 end
 
 end

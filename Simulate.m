@@ -3,7 +3,7 @@ boat = Config_Boat ;
 env = Config_Env ;
 robot = Config_Robot(sim) ;
 command = [0,0,0,0] ; % initialize global robot command value
-state = State(sim) ;
+state = State(sim, robot.nparams) ;
 
 % Initialize iteration and timing management variables
 i = 1 ;
@@ -15,7 +15,7 @@ sim.quit = false ;
 % Prepare history for timeseries sim, or graphics for realtime sim
 if(sim.type == 1)
     fprintf('\n')
-    history = History(sim) ;
+    history = History(sim, robot.nparams) ;
 elseif(sim.type == 2) % initialize 2D graphics
     Init2D ;
 elseif(sim.type == 3) % initialize 3D graphics
